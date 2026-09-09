@@ -7,6 +7,8 @@ export interface ChatContext {
   customCategories: CustomCategoryDef[];
   budgetRules: BudgetRule[];
   userName: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface QuickSuggestion {
@@ -1252,6 +1254,318 @@ export function processLocalQuery(message: string, context: ChatContext): string
       `• Ensino conceitos de educação financeira avançada (Cartões & Milhas, Finanças PJ, Holding, CLT vs PJ, Impostos, Renda Fixa e Aposentadoria);\n` +
       `• Oriento sobre todas as ferramentas do sistema (Scanner OCR, Relatórios, Backup, Categorias);\n` +
       `• Opero de forma segura, rápida e privada!`
+    );
+  }
+
+  // ==========================================
+  // PERGUNTAS SOBRE O SISTEMA CASHFLOW (30 Q&A)
+  // ==========================================
+  // 1. Onde meus dados ficam salvos?
+  if (norm.includes("onde meus dados") || norm.includes("dados ficam salvos") || norm.includes("meus dados estao salvos") || norm.includes("onde fica salvo")) {
+    return (
+      `🔒 **Armazenamento e Privacidade dos Dados:**\n\n` +
+      `O CashFlow prioriza sua privacidade com arquitetura **Local-First**:\n` +
+      `• Todos os seus lançamentos, contas e cartões são gravados diretamente no armazenamento local protegido do seu dispositivo;\n` +
+      `• Nenhuma informação financeira sensível é compartilhada ou vendida para terceiros;\n` +
+      `• Você possui controle 100% autônomo sobre seus dados, podendo gerar backups e restaurá-los a qualquer instante.`
+    );
+  }
+
+  // 2. Como funciona o Scanner de Cupom Fiscal / OCR?
+  if (norm.includes("scanner") || norm.includes("cupom fiscal") || norm.includes("como funciona o ocr") || norm.includes("leitor de nota")) {
+    return (
+      `📸 **Scanner Inteligente de Cupons (OCR):**\n\n` +
+      `O sistema possui inteligência visual para digitalizar suas notas fiscais instantaneamente:\n` +
+      `1. Acesse o botão de **Scanner / OCR** na tela de Finanças ou Nova Transação;\n` +
+      `2. Tire uma foto nítida do cupom ou envie um arquivo de imagem;\n` +
+      `3. O motor OCR lê o valor total, identifica o estabelecimento e sugere a categoria adequada automaticamente;\n` +
+      `4. Você só precisa confirmar os dados com 1 clique para salvar!`
+    );
+  }
+
+  // 3. Como cadastrar uma nova receita ou despesa?
+  if (norm.includes("como cadastrar transacao") || norm.includes("adicionar receita") || norm.includes("adicionar despesa") || norm.includes("novo lancamento") || norm.includes("adicionar transacao")) {
+    return (
+      `➕ **Cadastrando Receitas e Despesas:**\n\n` +
+      `1. Na barra superior ou tela inicial, clique no botão **+ Nova Transação**;\n` +
+      `2. Selecione o tipo (**Receita** ou **Despesa**);\n` +
+      `3. Informe a descrição, valor, data e categoria correspondente;\n` +
+      `4. Escolha a conta ou cartão utilizado;\n` +
+      `5. Marque se é uma despesa recorrente/fixa se desejar e clique em **Salvar**.`
+    );
+  }
+
+  // 4. Como cadastrar ou editar contas bancárias e cartões?
+  if (norm.includes("cadastrar conta") || norm.includes("adicionar cartao") || norm.includes("editar conta") || norm.includes("cadastrar cartao") || norm.includes("gerenciar contas")) {
+    return (
+      `💳 **Gestão de Contas e Cartões:**\n\n` +
+      `• Acesse o menu lateral e clique em **Contas / Cartões**;\n` +
+      `• Clique em **+ Nova Conta** para registrar contas correntes, poupanças ou carteiras de investimento;\n` +
+      `• Cadastre seus **Cartões de Crédito** com limite total, data de fechamento e vencimento da fatura;\n` +
+      `• Os cartões utilizam visualização interativa 3D com efeito de inclinação física ao passar o mouse.`
+    );
+  }
+
+  // 5. O que é o Modo Privacidade (Eye Icon)?
+  if (norm.includes("modo privacidade") || norm.includes("ocultar saldo") || norm.includes("esconder valor") || norm.includes("icone de olho")) {
+    return (
+      `👁️ **Modo Privacidade:**\n\n` +
+      `Ideal para quando você utiliza o CashFlow em locais públicos ou compartilha sua tela:\n` +
+      `• Clique no ícone de olho no cabeçalho superior;\n` +
+      `• Todos os valores monetários, saldos de contas e faturas serão ocultados por tarjas pontilhadas (•••);\n` +
+      `• Clique novamente para restaurar a visualização completa a qualquer momento.`
+    );
+  }
+
+  // 6. Como criar ou personalizar categorias?
+  if (norm.includes("criar categoria") || norm.includes("personalizar categoria") || norm.includes("novas categorias") || norm.includes("editar categoria")) {
+    return (
+      `🏷️ **Categorias Personalizadas:**\n\n` +
+      `• Vá em **Configurações > Categorias**;\n` +
+      `• Você pode criar tags específicas para seus hábitos de consumo (ex: "Pet Shop", "Cursos", "Delivery");\n` +
+      `• Escolha cores personalizadas e ícones para facilitar o reconhecimento visual em gráficos e relatórios.`
+    );
+  }
+
+  // 7. Como o CashFlow calcula a regra 50/30/20?
+  if (norm.includes("como o sistema calcula o 50/30/20") || norm.includes("radar 50/30/20") || norm.includes("como funciona o 50 30 20 no app")) {
+    return (
+      `⚖️ **Radar 50/30/20 Integrado:**\n\n` +
+      `O CashFlow classifica suas despesas automaticamente:\n` +
+      `• **50% Necessidades:** Moradia, supermercado, saúde e contas fixas essenciais;\n` +
+      `• **30% Desejos:** Lazer, restaurantes, viagens e hobbies;\n` +
+      `• **20% Futuro / Poupança:** Aportes, amortizações e investimentos;\n` +
+      `• O gráfico na tela de Planejamento indica em tempo real se alguma fatia ultrapassou o teto ideal.`
+    );
+  }
+
+  // 8. O que são transações recorrentes e como configurá-las?
+  if (norm.includes("transacao recorrente") || norm.includes("gasto fixo") || norm.includes("despesa recorrente") || norm.includes("receita recorrente")) {
+    return (
+      `🔄 **Transações Recorrentes:**\n\n` +
+      `Para contas que se repetem todo mês (aluguel, condomínio, streaming, salário):\n` +
+      `• Ao criar ou editar uma transação, marque a opção **Recorrente / Mensal**;\n` +
+      `• O CashFlow projeta essas saídas e entradas nos meses futuros, permitindo prever seu saldo líquido com antecedência.`
+    );
+  }
+
+  // 9. Como criar e acompanhar metas financeiras?
+  if (norm.includes("criar meta") || norm.includes("acompanhar meta") || norm.includes("metas financeiras") || norm.includes("como funciona as metas")) {
+    return (
+      `🎯 **Metas Financeiras:**\n\n` +
+      `• Acesse a seção de **Metas** no menu;\n` +
+      `• Defina o objetivo (ex: "Reserva de Emergência", "Viagem Europa", "Carro Novo");\n` +
+      `• Estabeleça o valor alvo e a data limite estimada;\n` +
+      `• Conforme você vincula depósitos ou poupança a essa meta, a barra de progresso percentual é atualizada.`
+    );
+  }
+
+  // 10. Como exportar relatórios em PDF ou Excel?
+  if (norm.includes("exportar relatorio") || norm.includes("exportar pdf") || norm.includes("exportar excel") || norm.includes("baixar relatorio") || norm.includes("gerar pdf")) {
+    return (
+      `📑 **Exportação de Relatórios:**\n\n` +
+      `• Na tela de **Finanças** ou **Relatórios**, clique no botão **Exportar** no canto superior direito;\n` +
+      `• Escolha o formato desejado:\n` +
+      `  - **PDF:** Documento diagramado executivo pronto para impressão ou envio contábil;\n` +
+      `  - **Excel / CSV:** Planilha detalhada com todas as linhas, datas e categorias para análises avançadas.`
+    );
+  }
+
+  // 11. Como fazer backup e restaurar meus dados?
+  if (norm.includes("fazer backup") || norm.includes("restaurar dados") || norm.includes("salvar backup") || norm.includes("recuperar dados") || norm.includes("backup")) {
+    return (
+      `💾 **Backup & Restauração Segura:**\n\n` +
+      `• Vá em **Configurações > Dados & Backup**;\n` +
+      `• Clique em **Exportar Backup (JSON)** para baixar um arquivo completo com todos os seus registros;\n` +
+      `• Para restaurar em outro aparelho ou navegador, use o botão **Importar Backup** e selecione o arquivo gerado anteriormente.`
+    );
+  }
+
+  // 12. O que é o Calendário Térmico (Heatmap)?
+  if (norm.includes("calendario termico") || norm.includes("heatmap") || norm.includes("mapa de calor") || norm.includes("calendario de gastos")) {
+    return (
+      `🔥 **Calendário Térmico de Gastos:**\n\n` +
+      `• Uma visualização estilo mapa de calor no painel financeiro;\n` +
+      `• Dias com cores suaves ou neutras representam poucos ou nenhum gasto;\n` +
+      `• Tons avermelhados/dourados mais intensos indicam dias de desembolsos vultosos;\n` +
+      `• Excelente para identificar picos de consumo ao longo dos dias do mês.`
+    );
+  }
+
+  // 13. O que são os cards 3D dos cartões?
+  if (norm.includes("cards 3d") || norm.includes("cartao 3d") || norm.includes("efeito tilt") || norm.includes("inclinacao do cartao")) {
+    return (
+      `✨ **Cards Físicos 3D Interativos:**\n\n` +
+      `• Nossos cartões de crédito possuem física interativa renderizada com aceleração de hardware;\n` +
+      `• Ao mover o cursor sobre o cartão, ele se inclina suavemente simulando profundidade e reflexo metálico;\n` +
+      `• Traz uma experiência premium de banco privado internacional diretamente na sua tela.`
+    );
+  }
+
+  // 14. Como excluir ou editar uma transação já cadastrada?
+  if (norm.includes("excluir transacao") || norm.includes("deletar transacao") || norm.includes("editar transacao") || norm.includes("apagar transacao") || norm.includes("corrigir lancamento")) {
+    return (
+      `✏️ **Editar ou Excluir Lançamentos:**\n\n` +
+      `• Na lista de transações (tela de Finanças), localize o item desejado;\n` +
+      `• Passe o mouse ou clique sobre a linha para exibir as opções de ação;\n` +
+      `• Clique no ícone de **Lápis** para editar valores, datas ou categorias;\n` +
+      `• Clique no ícone de **Lixeira** para excluir definitivamente a transação.`
+    );
+  }
+
+  // 15. O sistema envia notificações de contas a pagar?
+  if (norm.includes("notificacoes") || norm.includes("alerta de conta") || norm.includes("aviso de vencimento") || norm.includes("lembrete de pagamento")) {
+    return (
+      `🔔 **Alertas e Notificações:**\n\n` +
+      `• O CashFlow monitora as datas de vencimento das faturas e contas recorrentes cadastradas;\n` +
+      `• Notificações visuais e badges de aviso aparecem na interface informando pagamentos próximos;\n` +
+      `• Você pode configurar o prazo de antecedência dos avisos em **Configurações > Notificações**.`
+    );
+  }
+
+  // 16. Posso usar o CashFlow no celular / smartphone?
+  if (norm.includes("usar no celular") || norm.includes("tem aplicativo") || norm.includes("funciona no celular") || norm.includes("versao mobile") || norm.includes("app mobile")) {
+    return (
+      `📱 **Experiência Mobile Completa:**\n\n` +
+      `• O CashFlow foi desenvolvido com design responsivo fluido adaptado para qualquer tamanho de tela;\n` +
+      `• Você pode abri-lo no navegador do seu smartphone (Chrome, Safari) com usabilidade impecável;\n` +
+      `• É possível adicionar o atalho à tela inicial do seu celular como um PWA (Web App Instalável).`
+    );
+  }
+
+  // 17. Como alterar meu nome ou foto de perfil?
+  if (norm.includes("foto de perfil") || norm.includes("mudar avatar") || norm.includes("alterar nome") || norm.includes("editar perfil")) {
+    return (
+      `👤 **Personalização do Perfil:**\n\n` +
+      `• Acesse o menu de **Perfil / Configurações** no canto superior;\n` +
+      `• Você pode alterar seu nome de exibição, e-mail e telefone;\n` +
+      `• Escolha um novo avatar ou faça upload de sua foto para deixar seu painel sob medida.`
+    );
+  }
+
+  // 18. Como redefinir minha senha de acesso?
+  if (norm.includes("redefinir senha") || norm.includes("esqueci minha senha") || norm.includes("trocar senha") || norm.includes("mudar senha")) {
+    return (
+      `🔑 **Segurança e Senhas:**\n\n` +
+      `• Na tela de login, clique no link **Esqueceu a senha?** para iniciar a recuperação segura;\n` +
+      `• Se você já estiver logado, acesse **Configurações > Segurança** e digite sua senha atual acompanhada da nova senha desejada.`
+    );
+  }
+
+  // 19. O que acontece se eu limpar os dados do navegador?
+  if (norm.includes("limpar dados do navegador") || norm.includes("limpar cache") || norm.includes("se eu formatar")) {
+    return (
+      `⚠️ **Atenção com a Limpeza de Navegador:**\n\n` +
+      `Como o CashFlow utiliza armazenamento local prioritário:\n` +
+      `• Se você limpar o cache completo ou dados de sites do navegador, os dados locais podem ser apagados;\n` +
+      `• **Recomendação essencial:** Antes de fazer limpezas no navegador ou formatar o computador, gere um arquivo de backup em **Configurações > Exportar Backup (JSON)**!`
+    );
+  }
+
+  // 20. Como filtrar transações por mês ou período específico?
+  if (norm.includes("filtrar transacoes") || norm.includes("filtrar por mes") || norm.includes("escolher periodo") || norm.includes("mudar mes")) {
+    return (
+      `📅 **Filtro Temporal de Lançamentos:**\n\n` +
+      `• No topo do painel principal, utilize o seletor de mês e ano;\n` +
+      `• Todos os gráficos, totais de receitas, despesas e extrato se ajustarão imediatamente ao mês selecionado;\n` +
+      `• Você também pode navegar pelos botões de avançar e retroceder meses.`
+    );
+  }
+
+  // 21. O CashFlow é gratuito ou tem planos pagos?
+  if (norm.includes("e gratuito") || norm.includes("e de graca") || norm.includes("quanto custa") || norm.includes("planos pagos") || norm.includes("preco")) {
+    return (
+      `💎 **Planos e Disponibilidade:**\n\n` +
+      `• O sistema oferece acesso completo às ferramentas essenciais de fluxo de caixa, orçamento 50/30/20 e gestão de cartões;\n` +
+      `• Recursos avançados corporativos, inteligência artificial preditiva e múltiplos usuários podem fazer parte de planos Premium;\n` +
+      `• Consulte a aba de **Planos** na Landing Page para verificar as novidades e upgrades disponíveis.`
+    );
+  }
+
+  // 22. Como funciona o gráfico de pizza/donut de categorias?
+  if (norm.includes("grafico de pizza") || norm.includes("grafico donut") || norm.includes("grafico de categorias") || norm.includes("grafico de despesas")) {
+    return (
+      `🍩 **Gráfico de Distribuição por Categoria:**\n\n` +
+      `• Apresenta visualmente a proporção das suas saídas no mês selecionado;\n` +
+      `• Cada fatia colorida representa uma categoria (Alimentação, Moradia, Transporte, etc.);\n` +
+      `• Passe o mouse sobre uma fatia para ver o valor exato em Reais e a porcentagem que ela consome do seu orçamento.`
+    );
+  }
+
+  // 23. Como interpretar o gráfico de fluxo mensal (Barras)?
+  if (norm.includes("grafico de barras") || norm.includes("fluxo mensal") || norm.includes("comparativo mensal") || norm.includes("grafico de evolucao")) {
+    return (
+      `📊 **Gráfico de Fluxo Mensal:**\n\n` +
+      `• Exibe barras comparativas de **Receitas (verde/esmeralda)** vs **Despesas (âmbar/coral)** ao longo dos meses;\n` +
+      `• Permite checar rapidamente se sua taxa de poupança está crescendo ou se certos meses tiveram despesas atípicas;\n` +
+      `• Ajuda a prever sazonalidades como pagamento de IPVA, IPTU e viagens de férias.`
+    );
+  }
+
+  // 24. O que é a transferência entre contas?
+  if (norm.includes("transferencia entre contas") || norm.includes("transferir saldo") || norm.includes("mover dinheiro de conta")) {
+    return (
+      `🔁 **Transferência Interna:**\n\n` +
+      `• Movimenta recursos entre suas próprias contas (ex: da Conta Corrente Itaú para a Carteira de Investimentos);\n` +
+      `• Não afeta suas receitas nem despesas líquidas do mês, apenas atualiza os saldos de origem e destino com exatidão.`
+    );
+  }
+
+  // 25. Posso cadastrar mais de um usuário na mesma conta?
+  if (norm.includes("mais de um usuario") || norm.includes("compartilhar conta") || norm.includes("modo casal") || norm.includes("multiplos usuarios")) {
+    return (
+      `👥 **Acesso Multi-Usuário / Finanças em Família:**\n\n` +
+      `• Você pode sincronizar dados exportando o backup ou utilizando contas com permissões de leitura/edição;\n` +
+      `• É possível gerenciar transações conjuntas de cônjuges ou sócios criando categorias específicas (ex: "Casa Comum", "Despesas Casal").`
+    );
+  }
+
+  // 26. O que fazer quando o scanner OCR não reconhece o cupom?
+  if (norm.includes("ocr falhou") || norm.includes("scanner nao leu") || norm.includes("cupom borrado") || norm.includes("erro no scanner")) {
+    return (
+      `🔍 **Dicas para Leitura OCR Perfeita:**\n\n` +
+      `1. Posicione o cupom em uma superfície plana e com boa iluminação natural ou branca;\n` +
+      `2. Evite sombras sobre a área do valor total e nome do estabelecimento;\n` +
+      `3. Mantenha o papel o mais esticado possível, sem dobras sobre os números;\n` +
+      `4. Se o cupom estiver apagado termicamente, você pode digitar o valor manualmente em segundos.`
+    );
+  }
+
+  // 27. Posso editar a categoria sugerida pelo scanner OCR?
+  if (norm.includes("editar ocr") || norm.includes("corrigir ocr") || norm.includes("mudar categoria do scanner")) {
+    return (
+      `✅ **Revisão Humana do OCR:**\n\n` +
+      `Sim! O scanner faz uma sugestão inteligente preliminar, mas você tem o controle final:\n` +
+      `• Antes de salvar a transação, você pode alterar a descrição, data, valor e escolher qualquer outra categoria da sua lista.`
+    );
+  }
+
+  // 28. O que é a aba Modo Plano (PlanMode)?
+  if (norm.includes("planmode") || norm.includes("modo plano") || norm.includes("planejamento futuro") || norm.includes("simulador")) {
+    return (
+      `🧭 **Modo Planejamento Estratégico (PlanMode):**\n\n` +
+      `• Uma área dedicada a simular cenários futuros para seu dinheiro;\n` +
+      `• Permite planejar a quitação antecipada de dívidas, aposentadoria independente e crescimento de patrimônio;\n` +
+      `• Apresenta diagnósticos visuais e diretrizes para otimizar sua distribuição de capital.`
+    );
+  }
+
+  // 29. Onde encontro documentação e tutoriais do CashFlow?
+  if (norm.includes("tutoriais") || norm.includes("manual do usuario") || norm.includes("como aprender a usar") || norm.includes("documentacao do sistema")) {
+    return (
+      `📚 **Central de Ajuda e Tutoriais:**\n\n` +
+      `• Eu, seu assistente virtual, estou disponível 24 horas por dia para tirar qualquer dúvida sobre o app;\n` +
+      `• Acompanhe também os guias rápidos e dicas embutidas em cada módulo com ícones de ajuda (**?**);\n` +
+      `• Você pode perguntar sobre qualquer tela, cálculo ou função a qualquer instante aqui no chat!`
+    );
+  }
+
+  // 30. Como reiniciar a conversa com o assistente do zero?
+  if (norm.includes("limpar conversa") || norm.includes("reiniciar chat") || norm.includes("apagar historico do chat") || norm.includes("comecar de novo")) {
+    return (
+      `🔄 **Reiniciar Chatbot:**\n\n` +
+      `• Clique no ícone de **Lixeira** ou **Reiniciar** no canto superior da janela do chat;\n` +
+      `• O histórico de mensagens será limpo e iniciaremos uma nova sessão analítica zerada imediatamente.`
     );
   }
 
