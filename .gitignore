@@ -7,14 +7,30 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+<<<<<<< HEAD
 # Node/Bun
 node_modules/
 bun.lockb
 .cache/
+=======
+# Node / Package Managers
+node_modules/
+bun.lockb
+.cache/
+.pnpm-store/
+.npm
+.yarn/
+*.tsbuildinfo
+>>>>>>> 8aaefac (New UI:UX etc..)
 
 # OS Files
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
+=======
+ehthumbs.db
+desktop.ini
+>>>>>>> 8aaefac (New UI:UX etc..)
 *.local
 
 # Environment Variables
@@ -32,7 +48,11 @@ Thumbs.db
 db.sqlite
 db.sqlite3
 
+<<<<<<< HEAD
 # Editors
+=======
+# Editors & IDEs
+>>>>>>> 8aaefac (New UI:UX etc..)
 .vscode/
 !.vscode/extensions.json
 !.vscode/settings.json
@@ -40,6 +60,7 @@ db.sqlite3
 .idea/
 *.swp
 *.swo
+<<<<<<< HEAD
 
 # Server (Bun/Elysia)
 src/server/dist/
@@ -48,12 +69,30 @@ src/server/build/
 src/server/tmp/
 
 # Frontend (Vite/React)
+=======
+*.sublime-project
+*.sublime-workspace
+
+# AI & Agent Artifacts
+.gemini/
+.agents/
+scratch/
+artifacts/
+
+# Build Outputs (Vite/React)
+>>>>>>> 8aaefac (New UI:UX etc..)
 dist/
 dist-ssr/
 build/
 out/
 coverage/
+<<<<<<< HEAD
 
 # Misc
+=======
+.turbo/
+
+# Deployments & Platforms
+>>>>>>> 8aaefac (New UI:UX etc..)
 .vercel
 .netlify

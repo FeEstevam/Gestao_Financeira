@@ -1,5 +1,9 @@
 import { useState, useRef } from "react";
+<<<<<<< HEAD
 import { Download, Upload, FileText, FileSpreadsheet, File } from "lucide-react";
+=======
+import { Download, FileText, FileSpreadsheet, File } from "lucide-react";
+>>>>>>> 8aaefac (New UI:UX etc..)
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -129,6 +133,7 @@ export function DataExchange({ onImport, transactions }: DataExchangeProps) {
 
   return (
     <div className="flex gap-2">
+<<<<<<< HEAD
       <input type="file" ref={fileInputRef} className="hidden" accept=".xlsx,.xls,.csv,.pdf" onChange={handleFileChange} />
 
       <Button
@@ -140,6 +145,8 @@ export function DataExchange({ onImport, transactions }: DataExchangeProps) {
         <span className="hidden sm:inline">Importar</span>
       </Button>
 
+=======
+>>>>>>> 8aaefac (New UI:UX etc..)
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="gap-2 gradient-primary border-0 text-primary-foreground font-semibold shadow-md h-9 sm:h-10">

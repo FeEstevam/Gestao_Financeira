@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import { Settings as SettingsIcon, Palette, Bell, Shield, Sun, Moon, CheckCircle2 } from "lucide-react";
+=======
+import { useState } from "react";
+import { Settings as SettingsIcon, Palette, Bell, Shield, Sun, Moon, CheckCircle2, Sliders, Database, Download, Lock } from "lucide-react";
+>>>>>>> 8aaefac (New UI:UX etc..)
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -56,22 +61,54 @@ export default function SettingsPage() {
   function handleSave() {
     toast({
       title: "Configurações salvas",
+<<<<<<< HEAD
       description: "Suas preferências foram atualizadas com sucesso.",
+=======
+      description: "Suas preferências de sistema foram sincronizadas.",
+    });
+  }
+
+  function handleExportJSON() {
+    const data = {
+      transactions: localStorage.getItem("financaspro_transactions"),
+      accounts: localStorage.getItem("financaspro_accounts"),
+      goals: localStorage.getItem("financaspro_goals"),
+      categories: localStorage.getItem("financaspro_categories"),
+      exportDate: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `cashflow-vault-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    toast({
+      title: "Backup gerado com sucesso",
+      description: "Arquivo criptográfico de dados exportado.",
+>>>>>>> 8aaefac (New UI:UX etc..)
     });
   }
 
   return (
+<<<<<<< HEAD
     <div className="w-full min-h-screen pb-20 sm:pb-10 font-sans tracking-tight bg-background relative overflow-hidden text-foreground/90 transition-colors duration-500">
 
       {/* ═══ Ambient Background ═══ */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none z-0" />
       <div className="absolute top-[-10%] right-[-10%] w-[45%] h-[45%] bg-indigo-500/[0.06] rounded-full blur-[150px] pointer-events-none z-0" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[45%] h-[45%] bg-purple-500/[0.05] rounded-full blur-[150px] pointer-events-none z-0" />
+=======
+    <div className="w-full min-h-screen pb-20 sm:pb-10 font-sans tracking-tight bg-[#08080a] relative overflow-hidden text-[#e8e6e3]">
+
+      {/* ═══ Ambient Glow ═══ */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(204,145,102,0.05)_0%,transparent_50%)] pointer-events-none z-0" />
+>>>>>>> 8aaefac (New UI:UX etc..)
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
+<<<<<<< HEAD
         className="max-w-[700px] mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 relative z-10"
       >
         {/* Header */}
@@ -144,10 +181,76 @@ export default function SettingsPage() {
                   </SelectContent>
                 </Select>
               </div>
+=======
+        className="max-w-[800px] mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 relative z-10"
+      >
+        {/* Header */}
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#1c1d22] pb-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-[#cc9166] uppercase">
+              <Sliders className="w-3.5 h-3.5" />
+              <span>System & Environment</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-serif-display font-light tracking-tight text-[#f5f4f0]">
+              Parâmetros do Cofre<span className="text-[#cc9166]">.</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-[#8a8880] font-sans">
+              Ajuste regras de telemetria, moeda do livro razão e protocolos de segurança.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Section: Environment & Display */}
+        <motion.section variants={itemVariants} className="rounded-2xl border border-[#1c1d22] bg-[#040406] p-6 sm:p-8 space-y-6 shadow-xl">
+          <div className="flex items-center gap-3 pb-4 border-b border-[#1c1d22]">
+            <div className="p-2 rounded-xl bg-[#121317] border border-[#1c1d22]">
+              <Palette className="h-4 w-4 text-[#cc9166]" />
+            </div>
+            <div>
+              <h2 className="text-base font-medium text-[#f5f4f0]">Ambiente e Moeda</h2>
+              <p className="text-xs text-[#6b6960]">Configuração de exibição dos registros</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* Ambient & Theme Badge */}
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[#121317]/60 border border-[#1c1d22] hover:border-[#2e3038] transition-colors">
+              <div className="flex items-center gap-3.5">
+                <div className="p-2 rounded-lg bg-[#08080a] border border-[#1c1d22]">
+                  <Moon className="h-4 w-4 text-[#cc9166]" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm text-[#f5f4f0]">Modo Midnight Vault (Escuro)</p>
+                  <p className="text-xs text-[#8a8880]">Tema padrão exclusivo com obsidian, ônix e acentos em cobre</p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider bg-[#1c1d22] text-[#cc9166] border border-[#cc9166]/30">
+                Ativo • Padrão
+              </span>
+            </div>
+
+            {/* Currency Select */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-[#121317]/60 border border-[#1c1d22] hover:border-[#2e3038] transition-colors gap-4">
+              <div>
+                <p className="font-medium text-sm text-[#f5f4f0]">Moeda Padrão do Razão</p>
+                <p className="text-xs text-[#8a8880]">Símbolo monetário usado na contabilidade do patrimônio</p>
+              </div>
+              <Select value={settings.currency} onValueChange={(v) => update({ currency: v })}>
+                <SelectTrigger className="w-full sm:w-[200px] bg-[#08080a] border-[#1c1d22] text-[#f5f4f0] rounded-xl font-mono text-xs focus:ring-1 focus:ring-[#cc9166]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-[#121317] border-[#1c1d22] text-[#f5f4f0] rounded-xl font-mono text-xs">
+                  <SelectItem value="BRL" className="focus:bg-[#1c1d22] cursor-pointer">BRL (R$) - Real</SelectItem>
+                  <SelectItem value="USD" className="focus:bg-[#1c1d22] cursor-pointer">USD ($) - Dólar</SelectItem>
+                  <SelectItem value="EUR" className="focus:bg-[#1c1d22] cursor-pointer">EUR (€) - Euro</SelectItem>
+                </SelectContent>
+              </Select>
+>>>>>>> 8aaefac (New UI:UX etc..)
             </div>
           </div>
         </motion.section>
 
+<<<<<<< HEAD
         {/* Notifications Section */}
         <motion.section variants={itemVariants} className="relative rounded-[32px] overflow-hidden group">
           <div className="absolute inset-0 rounded-[32px] p-[1px] bg-gradient-to-b from-sky-500/30 via-transparent to-transparent z-0 opacity-60 group-hover:opacity-100 transition-opacity duration-700">
@@ -191,10 +294,40 @@ export default function SettingsPage() {
                 </div>
                 <Switch checked={settings.budgetAlerts} onCheckedChange={(v) => update({ budgetAlerts: v })} className="data-[state=checked]:bg-sky-500" />
               </div>
+=======
+        {/* Section: Telemetry & Alerts */}
+        <motion.section variants={itemVariants} className="rounded-2xl border border-[#1c1d22] bg-[#040406] p-6 sm:p-8 space-y-6 shadow-xl">
+          <div className="flex items-center gap-3 pb-4 border-b border-[#1c1d22]">
+            <div className="p-2 rounded-xl bg-[#121317] border border-[#1c1d22]">
+              <Bell className="h-4 w-4 text-[#cc9166]" />
+            </div>
+            <div>
+              <h2 className="text-base font-medium text-[#f5f4f0]">Notificações e Gatilhos</h2>
+              <p className="text-xs text-[#6b6960]">Alertas proativos sobre despesas e orçamentos</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[#121317]/60 border border-[#1c1d22] hover:border-[#2e3038] transition-colors">
+              <div>
+                <p className="font-medium text-sm text-[#f5f4f0]">Alertas Críticos de Limite</p>
+                <p className="text-xs text-[#8a8880]">Notificar imediatamente quando despesas atingirem 80% do teto</p>
+              </div>
+              <Switch checked={settings.budgetAlerts} onCheckedChange={(v) => update({ budgetAlerts: v })} className="data-[state=checked]:bg-[#cc9166]" />
+            </div>
+
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[#121317]/60 border border-[#1c1d22] hover:border-[#2e3038] transition-colors">
+              <div>
+                <p className="font-medium text-sm text-[#f5f4f0]">Relatório Semanal de Balanço</p>
+                <p className="text-xs text-[#8a8880]">Resumo consolidado das movimentações do livro razão todo domingo</p>
+              </div>
+              <Switch checked={settings.weeklyReport} onCheckedChange={(v) => update({ weeklyReport: v })} className="data-[state=checked]:bg-[#cc9166]" />
+>>>>>>> 8aaefac (New UI:UX etc..)
             </div>
           </div>
         </motion.section>
 
+<<<<<<< HEAD
         {/* Security Section */}
         <motion.section variants={itemVariants} className="relative rounded-[32px] overflow-hidden group">
           <div className="absolute inset-0 rounded-[32px] p-[1px] bg-gradient-to-b from-emerald-500/30 via-transparent to-transparent z-0 opacity-60 group-hover:opacity-100 transition-opacity duration-700">
@@ -219,11 +352,48 @@ export default function SettingsPage() {
                 </div>
                 <Switch checked={settings.twoFactor} onCheckedChange={(v) => update({ twoFactor: v })} className="data-[state=checked]:bg-emerald-500" />
               </div>
+=======
+        {/* Section: Security & Data Backup */}
+        <motion.section variants={itemVariants} className="rounded-2xl border border-[#1c1d22] bg-[#040406] p-6 sm:p-8 space-y-6 shadow-xl">
+          <div className="flex items-center gap-3 pb-4 border-b border-[#1c1d22]">
+            <div className="p-2 rounded-xl bg-[#121317] border border-[#1c1d22]">
+              <Shield className="h-4 w-4 text-[#cc9166]" />
+            </div>
+            <div>
+              <h2 className="text-base font-medium text-[#f5f4f0]">Custódia e Backup de Dados</h2>
+              <p className="text-xs text-[#6b6960]">Exportação soberana e integridade dos registros</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[#121317]/60 border border-[#1c1d22] hover:border-[#2e3038] transition-colors">
+              <div>
+                <p className="font-medium text-sm text-[#f5f4f0]">Autenticação em Duas Etapas (2FA)</p>
+                <p className="text-xs text-[#8a8880]">Exigir chave temporária TOTP para desbloqueio do cofre</p>
+              </div>
+              <Switch checked={settings.twoFactor} onCheckedChange={(v) => update({ twoFactor: v })} className="data-[state=checked]:bg-[#34d399]" />
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-[#121317]/60 border border-[#1c1d22] hover:border-[#2e3038] transition-colors gap-4">
+              <div>
+                <p className="font-medium text-sm text-[#f5f4f0]">Exportar Livro Razão Completo</p>
+                <p className="text-xs text-[#8a8880]">Download de todas as contas, metas e lançamentos em JSON</p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleExportJSON}
+                className="bg-[#08080a] hover:bg-[#121317] text-[#f5f4f0] border-[#1c1d22] rounded-xl text-xs font-mono flex items-center gap-2"
+              >
+                <Download className="h-3.5 w-3.5 text-[#cc9166]" />
+                Exportar JSON
+              </Button>
+>>>>>>> 8aaefac (New UI:UX etc..)
             </div>
           </div>
         </motion.section>
 
         {/* Save Button */}
+<<<<<<< HEAD
         <motion.div variants={itemVariants} className="pt-4 pb-10">
           <Button
             onClick={handleSave}
@@ -231,6 +401,15 @@ export default function SettingsPage() {
           >
             <CheckCircle2 className="h-6 w-6" />
             Salvar Preferências Atuais
+=======
+        <motion.div variants={itemVariants} className="pt-2 pb-10">
+          <Button
+            onClick={handleSave}
+            className="w-full h-14 rounded-xl bg-[#ffffff] hover:bg-[#f5f4f0] text-[#08080a] font-medium text-sm tracking-tight flex items-center justify-center gap-2 shadow-xl transition-all"
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            Salvar Parâmetros
+>>>>>>> 8aaefac (New UI:UX etc..)
           </Button>
         </motion.div>
 

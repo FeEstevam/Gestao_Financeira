@@ -177,4 +177,85 @@
     color: rgba(255, 255, 255, 0.5) !important;
     font-size: 11px !important;
   }
+<<<<<<< HEAD
+=======
+
+  /* Slash Midnight Vault Design System (DESIGN.md) */
+  .font-serif-display {
+    font-family: 'Playfair Display', 'DM Serif Display', Georgia, serif;
+    letter-spacing: 0.01em;
+  }
+  
+  .font-sans-ui {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .bg-obsidian {
+    background-color: #08080a;
+  }
+
+  .bg-onyx {
+    background-color: #040406;
+  }
+
+  .bg-carbon {
+    background-color: #121317;
+  }
+
+  .border-graphite {
+    border-color: #1c1d22;
+  }
+
+  .border-slate-line {
+    border-color: #2e3038;
+  }
+
+  .text-copper {
+    color: #cc9166;
+  }
+
+  .border-copper {
+    border-color: #cc9166;
+  }
+
+  .bg-copper {
+    background-color: #cc9166;
+  }
+
+  .text-bone {
+    color: #e2e3e9;
+  }
+
+  .text-fog {
+    color: #9194a1;
+  }
+
+  .text-mist {
+    color: #acafb9;
+  }
+
+  .text-silver {
+    color: #c7c9d1;
+  }
+
+  .text-ash {
+    color: #5e616e;
+  }
+
+  .text-steel {
+    color: #777a88;
+  }
+
+  .gilded-gradient {
+    background: linear-gradient(103deg, rgb(174, 147, 87), rgb(255, 240, 204) 40%, rgb(174, 147, 87) 70%, rgba(189, 157, 79, 0));
+  }
+
+  .gilded-stroke {
+    stroke: url(#gildedGrad);
+  }
+
+  .gilded-border {
+    border-image: linear-gradient(103deg, rgb(174, 147, 87), rgb(255, 240, 204) 40%, rgb(174, 147, 87) 70%, rgba(189, 157, 79, 0)) 1;
+  }
+>>>>>>> 8aaefac (New UI:UX etc..)
 }

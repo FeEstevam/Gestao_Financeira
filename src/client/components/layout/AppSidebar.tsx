@@ -3,15 +3,27 @@ import {
   Target,
   CreditCard,
   FileBarChart,
+<<<<<<< HEAD
   Settings,
+=======
+>>>>>>> 8aaefac (New UI:UX etc..)
   Wallet,
   Plus,
   LifeBuoy,
   Sparkles,
+<<<<<<< HEAD
   CheckCircle2,
   Tags,
   Sliders,
   CandlestickChart,
+=======
+  Tags,
+  Sliders,
+  CandlestickChart,
+  HelpCircle,
+  FileText,
+  User as UserIcon,
+>>>>>>> 8aaefac (New UI:UX etc..)
 } from "lucide-react";
 import { NavLink } from "./NavLink";
 import {
@@ -27,6 +39,7 @@ import {
   useSidebar,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+<<<<<<< HEAD
 import {
   Dialog,
   DialogContent,
@@ -48,6 +61,24 @@ const menuItems = [
   { title: "Estratégia", url: "/estrategia", icon: Sliders },
   { title: "Investimentos", url: "/investimentos", icon: CandlestickChart },
   { title: "Relatórios", url: "/relatorios", icon: FileBarChart },
+=======
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { cn } from "@/client/lib/utils";
+import { getSession } from "@/client/lib/auth";
+import { useState, useEffect } from "react";
+
+const menuItems = [
+  { title: "Painel Principal", url: "/", icon: LayoutDashboard },
+  { title: "Metas Financeiras", url: "/metas", icon: Target },
+  { title: "Contas & Cartões", url: "/contas", icon: CreditCard },
+  { title: "Categorias", url: "/categorias", icon: Tags },
+  { title: "Estratégia Vault", url: "/estrategia", icon: Sliders },
+  { title: "Investimentos", url: "/investimentos", icon: CandlestickChart },
+  { title: "Relatórios & DRE", url: "/relatorios", icon: FileBarChart },
+  { title: "Documentação", url: "/documentacao", icon: FileText },
+>>>>>>> 8aaefac (New UI:UX etc..)
   { title: "Suporte", url: "/suporte", icon: LifeBuoy },
 ];
 
@@ -55,13 +86,61 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = useSidebar();
+<<<<<<< HEAD
   const { theme } = useTheme();
   const isCollapsed = state === "collapsed";
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+=======
+  const isCollapsed = state === "collapsed";
+
+  const [user, setUser] = useState(() => getSession());
+  const [avatarUrl, setAvatarUrl] = useState<string>(() => {
+    const session = getSession();
+    if (session?.avatar_url) return session.avatar_url;
+    try {
+      const stored = localStorage.getItem("financaspro_profile");
+      if (stored) return JSON.parse(stored).avatarUrl || "";
+    } catch {}
+    return "";
+  });
+
+  useEffect(() => {
+    const syncUser = () => {
+      const session = getSession();
+      setUser(session);
+      let img = session?.avatar_url || "";
+      if (!img) {
+        try {
+          const stored = localStorage.getItem("financaspro_profile");
+          if (stored) img = JSON.parse(stored).avatarUrl || "";
+        } catch {}
+      }
+      setAvatarUrl(img);
+    };
+
+    syncUser();
+    window.addEventListener("user_profile_updated", syncUser);
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener("user_profile_updated", syncUser);
+      window.removeEventListener("storage", syncUser);
+    };
+  }, []);
+
+  const username = user?.name ?? "Usuário";
+  const initials = username
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2) || "US";
+>>>>>>> 8aaefac (New UI:UX etc..)
 
   return (
     <Sidebar
       collapsible="icon"
+<<<<<<< HEAD
       className="border-r-0 transition-[width,background-color] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
       style={{
         background: isDark
@@ -113,12 +192,45 @@ export function AppSidebar() {
               "h-8 w-8 transition-all duration-500 rounded-lg",
               isDark ? "text-white/40 hover:text-white hover:bg-white/10" : "text-slate-400 hover:text-slate-900 hover:bg-slate-100"
             )} />
+=======
+      className="border-r border-[#1c1d22] bg-[#040406] text-[#e2e3e9] transition-[width] duration-300"
+    >
+      {/* ── HEADER ── */}
+      <SidebarHeader className="px-5 py-5 border-b border-[#1c1d22]/50 group-data-[state=collapsed]:px-3">
+        <div className="flex items-center justify-between overflow-hidden">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#ffffff] flex items-center justify-center text-[#000000] font-bold text-lg select-none shadow-sm">
+              /
+            </div>
+            {!isCollapsed && (
+              <div className="flex flex-col">
+                <span className="font-serif-display font-medium tracking-tight text-lg text-[#ffffff] leading-none">
+                  Cashflow<span className="text-[#cc9166]">.</span>
+                </span>
+                <span className="text-[10px] font-mono text-[#9194a1] tracking-widest uppercase mt-0.5">
+                  Vault Core
+                </span>
+              </div>
+            )}
+          </div>
+          {!isCollapsed && (
+            <SidebarTrigger className="h-7 w-7 text-[#9194a1] hover:text-[#ffffff] hover:bg-[#121317] rounded-md transition-colors" />
+          )}
+        </div>
+        {isCollapsed && (
+          <div className="flex justify-center mt-2">
+            <SidebarTrigger className="h-7 w-7 text-[#9194a1] hover:text-[#ffffff] hover:bg-[#121317] rounded-md transition-colors" />
+>>>>>>> 8aaefac (New UI:UX etc..)
           </div>
         )}
       </SidebarHeader>
 
       {/* ── NAV ── */}
+<<<<<<< HEAD
       <SidebarContent className="px-3 group-data-[state=collapsed]:px-1.5 transition-all duration-500 pt-1">
+=======
+      <SidebarContent className="px-3 py-3 group-data-[state=collapsed]:px-1.5">
+>>>>>>> 8aaefac (New UI:UX etc..)
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu className="gap-1">
@@ -134,6 +246,7 @@ export function AppSidebar() {
                       asChild
                       tooltip={item.title}
                       className={cn(
+<<<<<<< HEAD
                         "relative h-11 rounded-xl px-4 transition-all duration-500 group/item border-0 outline-none ring-0 overflow-hidden",
                         isActive
                           ? (isDark ? "text-white" : "text-emerald-600")
@@ -151,10 +264,18 @@ export function AppSidebar() {
                           }
                           : undefined
                       }
+=======
+                        "relative h-9 rounded-lg px-3 transition-all group/item border outline-none ring-0",
+                        isActive
+                          ? "bg-[#121317] border-[#2e3038] text-[#ffffff]"
+                          : "border-transparent text-[#9194a1] hover:text-[#e2e3e9] hover:bg-[#121317]/50"
+                      )}
+>>>>>>> 8aaefac (New UI:UX etc..)
                     >
                       <NavLink
                         to={item.url}
                         end={item.url === "/"}
+<<<<<<< HEAD
                         className="flex items-center gap-3.5 w-full whitespace-nowrap"
                       >
                         <item.icon
@@ -174,6 +295,18 @@ export function AppSidebar() {
                               : (isDark ? "text-white/55" : "text-slate-600")
                           )}
                         >
+=======
+                        className="flex items-center gap-3 w-full whitespace-nowrap"
+                      >
+                        <item.icon
+                          className={cn(
+                            "h-4 w-4 shrink-0 transition-colors",
+                            isActive ? "text-[#cc9166]" : "text-[#9194a1] group-hover/item:text-[#e2e3e9]"
+                          )}
+                          strokeWidth={isActive ? 2 : 1.75}
+                        />
+                        <span className="text-xs font-medium tracking-tight group-data-[state=collapsed]:hidden">
+>>>>>>> 8aaefac (New UI:UX etc..)
                           {item.title}
                         </span>
                       </NavLink>
@@ -187,6 +320,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* ── FOOTER ── */}
+<<<<<<< HEAD
       <SidebarFooter className="p-4 group-data-[state=collapsed]:p-2 transition-all duration-500 space-y-3 overflow-hidden">
         {/* Upgrade hint card */}
         <div
@@ -286,6 +420,42 @@ export function AppSidebar() {
               Novo Lançamento
             </span>
           )}
+=======
+      <SidebarFooter className="p-3 border-t border-[#1c1d22]/50 group-data-[state=collapsed]:p-2 space-y-2">
+        {/* User Card in Sidebar */}
+        <Link
+          to="/perfil"
+          className={cn(
+            "flex items-center gap-2.5 p-2 rounded-xl bg-[#08080a] border border-[#1c1d22] hover:border-[#2e3038] hover:bg-[#0f1015] transition-all group",
+            isCollapsed && "justify-center p-1.5"
+          )}
+          title="Ver perfil"
+        >
+          <Avatar className="h-8 w-8 rounded-lg border border-[#2e3038] shrink-0 bg-[#121317]">
+            <AvatarImage src={avatarUrl} alt={username} className="object-cover" />
+            <AvatarFallback className="bg-[#121317] text-[#cc9166] text-xs font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          {!isCollapsed && (
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-xs font-medium text-white truncate group-hover:text-[#cc9166] transition-colors">
+                {username}
+              </span>
+              <span className="text-[10px] text-[#9194a1] truncate">
+                Perfil & Segurança
+              </span>
+            </div>
+          )}
+        </Link>
+
+        <Button
+          onClick={() => navigate("/?new=1")}
+          className="w-full h-9 gap-2 bg-[#ffffff] hover:bg-[#ffffff]/90 text-[#000000] font-semibold text-xs rounded-lg transition-all active:scale-[0.98] border-0"
+        >
+          <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+          {!isCollapsed && <span>Novo Registro</span>}
+>>>>>>> 8aaefac (New UI:UX etc..)
         </Button>
       </SidebarFooter>
     </Sidebar>
