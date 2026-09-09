@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, Wallet, UserPlus, Fingerprint } from "lucide-react";
-import { register } from "@/client/lib/auth";
-
-export default function Register() {
-  const navigate = useNavigate();
-=======
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, User, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
@@ -17,7 +8,6 @@ export default function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
->>>>>>> 8aaefac (New UI:UX etc..)
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -25,16 +15,11 @@ export default function Register() {
     password: "",
     confirm: "",
   });
-<<<<<<< HEAD
-=======
 
->>>>>>> 8aaefac (New UI:UX etc..)
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
-=======
   const [acceptTerms, setAcceptTerms] = useState(true);
 
   // Pre-fill email if passed from Landing page URL parameter
@@ -44,7 +29,6 @@ export default function Register() {
       setForm((prev) => ({ ...prev, email: emailParam }));
     }
   }, [searchParams]);
->>>>>>> 8aaefac (New UI:UX etc..)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -55,25 +39,6 @@ export default function Register() {
     e.preventDefault();
     const { firstName, lastName, email, password, confirm } = form;
     if (!firstName || !lastName || !email || !password || !confirm) {
-<<<<<<< HEAD
-      setError("Preencha todos os campos.");
-      return;
-    }
-    if (password.length < 6) {
-      setError("A senha deve ter pelo menos 6 caracteres.");
-      return;
-    }
-    if (password !== confirm) {
-      setError("As senhas não coincidem.");
-      return;
-    }
-    setLoading(true);
-    try {
-      await register(`${firstName} ${lastName}`, email, password);
-      navigate("/");
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Erro ao criar conta.");
-=======
       setError("Preencha todos os campos obrigatórios.");
       return;
     }
@@ -96,158 +61,12 @@ export default function Register() {
       navigate("/");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Erro ao abrir o cofre. Tente novamente.");
->>>>>>> 8aaefac (New UI:UX etc..)
     } finally {
       setLoading(false);
     }
   }
 
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-6 relative overflow-hidden font-sans">
-      {/* Background Glows */}
-      <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-emerald-600/5 blur-[100px] pointer-events-none" />
-
-      <div className="w-full max-w-md relative z-10 flex flex-col items-center">
-        {/* Logo */}
-        <div className="flex items-center gap-3 mb-10">
-          <div className="p-2.5 rounded-2xl bg-blue-600/20 border border-blue-500/30">
-            <Wallet className="h-6 w-6 text-blue-500" />
-          </div>
-          <span className="text-white font-black text-2xl tracking-tighter">
-            Cash<span className="text-blue-500 italic">Flow</span>
-          </span>
-        </div>
-
-        {/* Card */}
-        <div className="w-full bg-[#16161a] border border-white/5 rounded-[32px] p-8 shadow-2xl shadow-black/50">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white tracking-tight mb-1">Create account</h2>
-            <p className="text-sm text-white/40 font-medium">Join us to start managing your finances</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* First Name + Last Name */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="relative group">
-                <input
-                  name="firstName"
-                  type="text"
-                  placeholder="First name"
-                  required
-                  value={form.firstName}
-                  onChange={handleChange}
-                  className="w-full h-14 px-4 rounded-2xl bg-white/[0.03] border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all font-medium text-sm"
-                />
-              </div>
-              <div className="relative group">
-                <input
-                  name="lastName"
-                  type="text"
-                  placeholder="Last name"
-                  required
-                  value={form.lastName}
-                  onChange={handleChange}
-                  className="w-full h-14 px-4 rounded-2xl bg-white/[0.03] border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all font-medium text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-500 transition-colors">
-                  <Mail className="h-5 w-5" />
-                </div>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="Email address"
-                  required
-                  value={form.email}
-                  onChange={handleChange}
-                  className="w-full h-14 pl-12 pr-4 rounded-2xl bg-white/[0.03] border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all font-medium"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-500 transition-colors">
-                  <Lock className="h-5 w-5" />
-                </div>
-                <input
-                  name="password"
-                  type={showPass ? "text" : "password"}
-                  placeholder="Create password"
-                  required
-                  value={form.password}
-                  onChange={handleChange}
-                  className="w-full h-14 pl-12 pr-12 rounded-2xl bg-white/[0.03] border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all font-medium"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
-                >
-                  {showPass ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-500 transition-colors">
-                  <Fingerprint className="h-5 w-5" />
-                </div>
-                <input
-                  name="confirm"
-                  type={showConfirm ? "text" : "password"}
-                  placeholder="Confirm password"
-                  required
-                  value={form.confirm}
-                  onChange={handleChange}
-                  className="w-full h-14 pl-12 pr-12 rounded-2xl bg-white/[0.03] border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all font-medium"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white transition-colors"
-                >
-                  {showConfirm ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <p className="text-xs text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3 font-medium">
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-base transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98] mt-2 flex items-center justify-center gap-2"
-            >
-              {loading ? "Creating account..." : (
-                <>
-                  <UserPlus className="h-5 w-5" />
-                  Sign up
-                </>
-              )}
-            </button>
-          </form>
-
-          <p className="text-center text-[13px] text-white/30 mt-8 font-medium">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-500 font-bold hover:text-blue-400 transition-colors">
-              Log in
-            </Link>
-          </p>
-        </div>
-      </div>
-=======
     <div className="min-h-screen bg-[#08080a] text-[#e2e3e9] flex items-center justify-center p-5 sm:p-8 relative selection:bg-[#cc9166]/20 selection:text-white font-sans overflow-x-hidden">
       
       {/* Subtle Top Ambient Glow */}
@@ -542,7 +361,6 @@ export default function Register() {
 
       </div>
 
->>>>>>> 8aaefac (New UI:UX etc..)
     </div>
   );
 }

@@ -45,21 +45,12 @@ export function FinanceCalendar({
           head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] text-center",
           row: "flex w-full mt-1",
           cell: "flex-1 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
-<<<<<<< HEAD
-          day: "h-10 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-accent rounded-md flex flex-col items-center justify-center gap-0.5",
-          day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-          day_today: "bg-accent text-accent-foreground",
-          day_outside: "text-muted-foreground opacity-50",
-          caption: "flex justify-center pt-1 relative items-center",
-          caption_label: "text-sm font-medium",
-=======
           day: "h-10 w-full p-0 font-normal aria-selected:opacity-100 hover:bg-[#1a1b23] text-[#e2e3e9] rounded-lg flex flex-col items-center justify-center gap-0.5 transition-colors",
           day_selected: "!bg-[#cc9166] !text-black font-semibold hover:!bg-[#e8a87c] shadow-md",
           day_today: "border border-[#cc9166]/50 text-white font-semibold",
           day_outside: "text-[#4a4c5e] opacity-40",
           caption: "flex justify-center pt-1 relative items-center",
           caption_label: "text-sm font-medium text-white",
->>>>>>> 8aaefac (New UI:UX etc..)
           nav: "hidden",
         }}
         components={{
@@ -72,17 +63,10 @@ export function FinanceCalendar({
                 {data && (
                   <div className="flex gap-0.5">
                     {data.income > 0 && (
-<<<<<<< HEAD
-                      <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--income))]" />
-                    )}
-                    {data.expense > 0 && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--expense))]" />
-=======
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm" />
                     )}
                     {data.expense > 0 && (
                       <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shadow-sm" />
->>>>>>> 8aaefac (New UI:UX etc..)
                     )}
                   </div>
                 )}
@@ -93,16 +77,6 @@ export function FinanceCalendar({
       />
 
       {/* Legend */}
-<<<<<<< HEAD
-      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[hsl(var(--income))]" />
-          Receita
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-[hsl(var(--expense))]" />
-          Despesa
-=======
       <div className="flex items-center justify-center gap-4 text-xs text-[#9194a1] pt-1">
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm" />
@@ -111,7 +85,6 @@ export function FinanceCalendar({
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-rose-400 shadow-sm" />
           <span>Despesa</span>
->>>>>>> 8aaefac (New UI:UX etc..)
         </div>
       </div>
 
@@ -124,25 +97,6 @@ export function FinanceCalendar({
         );
         if (!dayTransactions.length) return null;
         return (
-<<<<<<< HEAD
-          <div className="bg-muted/50 rounded-lg p-3 space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground">
-              Transações do dia
-            </p>
-            {dayTransactions.map((t) => (
-              <div key={t.id} className="flex items-center justify-between text-xs">
-                <span className="truncate max-w-[140px]">{t.description}</span>
-                <span
-                  className={cn(
-                    "font-semibold",
-                    t.type === "income" ? "text-[hsl(var(--income))]" : "text-[hsl(var(--expense))]"
-                  )}
-                >
-                  {t.type === "income" ? "+" : "-"}R$ {t.amount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                </span>
-              </div>
-            ))}
-=======
           <div
             className="rounded-xl p-3.5 space-y-2.5 border shadow-lg"
             style={{
@@ -183,7 +137,6 @@ export function FinanceCalendar({
                 </div>
               ))}
             </div>
->>>>>>> 8aaefac (New UI:UX etc..)
           </div>
         );
       })()}

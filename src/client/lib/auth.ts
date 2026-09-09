@@ -13,19 +13,13 @@ const SESSION_EXPIRY_KEY = "mymoneyfriend_session_expiry";
 const SESSION_DAYS = 7;
 
 // ─── Salva a sessão com validade de 7 dias ────────────────────────────────────
-<<<<<<< HEAD
-function saveSession(user: User, token?: string) {
-=======
 export function saveSession(user: User, token?: string) {
->>>>>>> 8aaefac (New UI:UX etc..)
   const expiry = Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000;
   localStorage.setItem(SESSION_KEY, JSON.stringify(user));
   localStorage.setItem(SESSION_EXPIRY_KEY, String(expiry));
   if (token) {
     localStorage.setItem("mymoneyfriend_token", token);
   }
-<<<<<<< HEAD
-=======
   window.dispatchEvent(new Event("user_profile_updated"));
 }
 
@@ -36,7 +30,6 @@ export function updateSessionUser(updates: Partial<User>): User | null {
   const updated: User = { ...current, ...updates };
   saveSession(updated);
   return updated;
->>>>>>> 8aaefac (New UI:UX etc..)
 }
 
 // ─── Retorna a sessão válida ou null ──────────────────────────────────────────

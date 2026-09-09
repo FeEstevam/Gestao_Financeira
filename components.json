@@ -16,11 +16,8 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
-<<<<<<< HEAD
-=======
   },
   "registries": {
     "@spell": "https://spell.sh/r/{name}.json"
->>>>>>> 8aaefac (New UI:UX etc..)
   }
 }

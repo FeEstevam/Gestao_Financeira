@@ -53,11 +53,7 @@ function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-<<<<<<< HEAD
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-=======
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
->>>>>>> 8aaefac (New UI:UX etc..)
       <TooltipProvider>
         <Toaster />
         <Sonner />

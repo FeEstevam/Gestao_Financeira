@@ -6,14 +6,6 @@
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function getFromStorage(key: string) {
-<<<<<<< HEAD
-  const data = localStorage.getItem(`mymoneyfriend_${key}`);
-  return data ? JSON.parse(data) : [];
-}
-
-function saveToStorage(key: string, data: any) {
-  localStorage.setItem(`mymoneyfriend_${key}`, JSON.stringify(data));
-=======
   try {
     const data = localStorage.getItem(`mymoneyfriend_${key}`);
     return data ? JSON.parse(data) : [];
@@ -29,25 +21,16 @@ function saveToStorage(key: string, data: any) {
   } catch (e) {
     console.error(`Error saving ${key} to storage:`, e);
   }
->>>>>>> 8aaefac (New UI:UX etc..)
 }
 
 function createMockService(key: string) {
   return {
     getAll: async () => {
-<<<<<<< HEAD
-      await delay(100);
-      return getFromStorage(key);
-    },
-    create: async (payload: any) => {
-      await delay(100);
-=======
       await delay(50);
       return getFromStorage(key);
     },
     create: async (payload: any) => {
       await delay(50);
->>>>>>> 8aaefac (New UI:UX etc..)
       const items = getFromStorage(key);
       const newItem = { ...payload, id: payload.id || crypto.randomUUID() };
       items.push(newItem);
@@ -55,11 +38,7 @@ function createMockService(key: string) {
       return newItem;
     },
     update: async (id: string, payload: any) => {
-<<<<<<< HEAD
-      await delay(100);
-=======
       await delay(50);
->>>>>>> 8aaefac (New UI:UX etc..)
       const items = getFromStorage(key);
       const index = items.findIndex((item: any) => item.id === id);
       if (index !== -1) {
@@ -70,11 +49,7 @@ function createMockService(key: string) {
       throw new Error(`${key} not found`);
     },
     delete: async (id: string, type?: string) => {
-<<<<<<< HEAD
-      await delay(100);
-=======
       await delay(50);
->>>>>>> 8aaefac (New UI:UX etc..)
       const items = getFromStorage(key);
       const filtered = items.filter((item: any) => item.id !== id);
       saveToStorage(key, filtered);
@@ -85,17 +60,11 @@ function createMockService(key: string) {
 
 export const usersService = createMockService("users");
 export const accountsService = createMockService("accounts");
-<<<<<<< HEAD
-export const transactionsService = createMockService("transactions");
-=======
->>>>>>> 8aaefac (New UI:UX etc..)
 export const goalsService = createMockService("goals");
 export const categoriesService = createMockService("categories");
 export const investmentsService = createMockService("investments");
 export const budgetRulesService = createMockService("budgetRules");
 
-<<<<<<< HEAD
-=======
 /**
  * Custom Transactions Service that automatically adjusts the balance of the associated Account/Card.
  */
@@ -197,4 +166,3 @@ export const transactionsService = {
     return { success: true };
   },
 };
->>>>>>> 8aaefac (New UI:UX etc..)

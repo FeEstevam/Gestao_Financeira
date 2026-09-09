@@ -177,8 +177,6 @@
     color: rgba(255, 255, 255, 0.5) !important;
     font-size: 11px !important;
   }
-<<<<<<< HEAD
-=======
 
   /* Slash Midnight Vault Design System (DESIGN.md) */
   .font-serif-display {
@@ -257,5 +255,4 @@
   .gilded-border {
     border-image: linear-gradient(103deg, rgb(174, 147, 87), rgb(255, 240, 204) 40%, rgb(174, 147, 87) 70%, rgba(189, 157, 79, 0)) 1;
   }
->>>>>>> 8aaefac (New UI:UX etc..)
 }
