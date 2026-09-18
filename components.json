@@ -16,5 +16,8 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
+  },
+  "registries": {
+    "@spell": "https://spell.sh/r/{name}.json"
   }
 }

@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { Target, Plus, Trash2, TrendingUp, Sparkles, Flag, Rocket, CheckCircle2 } from "lucide-react";
+import {
+  Target,
+  Plus,
+  Trash2,
+  TrendingUp,
+  Sparkles,
+  CheckCircle2,
+  Calendar,
+  ShieldCheck,
+  CreditCard,
+  Rocket,
+  Lock,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,25 +23,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useFinance } from "@/client/hooks/use-finance";
-import { Goal } from "@/client/lib/finance-data";
 import { cn } from "@/client/lib/utils";
-import { useTheme } from "@/components/theme-provider";
+import { TiltCard } from "@/client/components/ui/tilt-card";
 
 const COLORS = [
-  "#6366f1", // Indigo
+  "#cc9166", // Copper
   "#10b981", // Emerald
-  "#f97316", // Orange
+  "#6366f1", // Indigo
+  "#f59e0b", // Amber
+  "#06b6d4", // Cyan
   "#ec4899", // Pink
-  "#3b82f6", // Blue
-  "#8b5cf6", // Violet
 ];
 
-const fmt = (v: number) => `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+const fmt = (v: number) =>
+  `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 export default function Goals() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-
   const { goals, addGoal, deleteGoal, updateGoalCurrent } = useFinance();
   const [open, setOpen] = useState(false);
 
@@ -40,7 +49,10 @@ export default function Goals() {
   const [deadline, setDeadline] = useState("");
 
   const resetForm = () => {
-    setName(""); setTarget(""); setCurrent(""); setDeadline("");
+    setName("");
+    setTarget("");
+    setCurrent("");
+    setDeadline("");
   };
 
   function handleAdd(e: React.FormEvent) {
@@ -69,136 +81,128 @@ export default function Goals() {
 
   const totalTarget = goals.reduce((s, g) => s + g.target, 0);
   const totalCurrent = goals.reduce((s, g) => s + g.current, 0);
-  const totalCompletionPct = totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
+  const totalCompletionPct =
+    totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-10 animate-in fade-in slide-in-from-bottom-3 duration-500 font-sans">
+      
       {/* ─── Header ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-border/50">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#1c1d22]">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 font-bold uppercase tracking-widest text-[10px]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2e3038] bg-[#040406] text-[#cc9166] font-semibold uppercase tracking-wider text-[11px] font-mono">
             <Sparkles className="h-3.5 w-3.5" />
-            Engenharia de Sonhos
+            CARTÕES DE TESOURARIA 3D
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-outfit">Metas e Acervos</h1>
-          <p className="text-muted-foreground font-medium text-sm max-w-lg">
-            Guarde dinheiro com propósito. Defina alvos, acompanhe o progresso do seu patrimônio e alcance sua liberdade.
+          <h1 className="font-serif-display text-3xl sm:text-4xl text-white font-normal tracking-[0.01em]">
+            Metas & Acervos 3D
+          </h1>
+          <p className="text-[14px] text-[#9194a1] max-w-xl leading-relaxed">
+            Mova o mouse sobre qualquer cartão para sentir a inclinação 3D dinâmica, reflexo de luz e profundidade de camadas.
           </p>
         </div>
 
-        <Dialog open={open} onOpenChange={(v) => {
-          if (!v) resetForm();
-          setOpen(v);
-        }}>
+        <Dialog
+          open={open}
+          onOpenChange={(v) => {
+            if (!v) resetForm();
+            setOpen(v);
+          }}
+        >
           <DialogTrigger asChild>
-            <Button
-              className="h-10 px-5 gap-2 bg-primary/10 hover:bg-primary/20 text-primary font-bold tracking-wide rounded-xl border border-primary/20 backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
-            >
-              <Plus className="h-4 w-4" /> Iniciar Projeto
+            <Button className="h-11 px-6 gap-2 rounded-full bg-[#ffffff] hover:bg-[#f0f0f4] text-[#000000] font-medium text-[14px] shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
+              <Plus className="h-4 w-4" /> Novo Objetivo
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-background border border-border rounded-3xl p-0 overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 opacity-10 blur-[100px] pointer-events-none transition-colors duration-500 bg-indigo-500" />
-            <div className="p-6 relative z-10">
-              <DialogHeader className="mb-6">
-                <DialogTitle className="text-2xl font-black text-foreground text-center flex items-center justify-center gap-2">
-                  <Target className="h-6 w-6 text-muted-foreground/50" />
-                  Novo Objetivo
+          <DialogContent className="sm:max-w-[440px] bg-[#040406] border border-[#1c1d22] text-[#e2e3e9] rounded-[14px] p-0 overflow-hidden shadow-2xl">
+            <div className="p-7 relative z-10 space-y-6">
+              <DialogHeader className="space-y-2 text-left">
+                <div className="inline-flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#cc9166]" />
+                  <span className="text-[11px] font-semibold text-[#cc9166] uppercase tracking-wider font-mono">
+                    PROJETO FINANCEIRO
+                  </span>
+                </div>
+                <DialogTitle className="font-serif-display text-2xl text-white font-normal">
+                  Criar Novo Alvo
                 </DialogTitle>
-                <p className="text-xs text-muted-foreground font-medium text-center mt-1">Até onde você quer chegar? Defina o norte.</p>
+                <p className="text-[13px] text-[#9194a1]">
+                  Defina o valor-alvo e o prazo de conquista para cálculo de aportes.
+                </p>
               </DialogHeader>
-              <form onSubmit={handleAdd} className="space-y-5">
 
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Códinome do Projeto</Label>
-                  <div className="relative group">
-                    <Target className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/30" />
+              <form onSubmit={handleAdd} className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label className="text-[#c7c9d1] text-[12px] font-medium uppercase tracking-wider">
+                    Nome do Objetivo
+                  </Label>
+                  <div className="relative">
+                    <Target className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5e616e]" />
                     <Input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Ex: Viagem para o Japão..."
+                      placeholder="Ex: Reserva de Emergência, Expansão B2B..."
                       maxLength={100}
                       required
-                      className="h-12 pl-11 bg-muted/30 border border-border rounded-2xl text-foreground text-sm font-semibold focus:border-primary/50 focus:bg-muted/50 transition-all"
+                      className="h-12 pl-11 bg-[#08080a] border border-[#2e3038] rounded-full text-white placeholder:text-[#5e616e] text-[13px] focus:outline-none focus:border-[#777a88]"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Alvo Ouro</Label>
-                    <div className="relative group">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-indigo-500">R$</span>
-                      <Input
-                        type="number"
-                        value={target}
-                        onChange={(e) => setTarget(e.target.value)}
-                        min="1"
-                        step="0.01"
-                        placeholder="0.00"
-                        required
-                        className="h-14 pl-12 text-xl font-black bg-muted/30 border border-border rounded-2xl text-foreground transition-all focus:border-indigo-500/50 focus:ring-indigo-500/20"
-                      />
-                    </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-[#c7c9d1] text-[12px] font-medium uppercase tracking-wider">
+                      Valor Alvo (R$)
+                    </Label>
+                    <Input
+                      type="number"
+                      value={target}
+                      onChange={(e) => setTarget(e.target.value)}
+                      min="1"
+                      step="0.01"
+                      placeholder="50000.00"
+                      required
+                      className="h-12 px-4 font-mono font-medium text-white bg-[#08080a] border border-[#2e3038] rounded-full text-[14px] focus:border-[#777a88]"
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Já Guardado</Label>
-                    <div className="relative group">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-emerald-500">R$</span>
-                      <Input
-                        type="number"
-                        value={current}
-                        onChange={(e) => setCurrent(e.target.value)}
-                        min="0"
-                        step="0.01"
-                        placeholder="0.00"
-                        className="h-14 pl-12 text-xl font-black bg-muted/30 border border-border rounded-2xl text-foreground transition-all focus:border-emerald-500/50 focus:ring-emerald-500/20"
-                      />
-                    </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-[#c7c9d1] text-[12px] font-medium uppercase tracking-wider">
+                      Já Acumulado
+                    </Label>
+                    <Input
+                      type="number"
+                      value={current}
+                      onChange={(e) => setCurrent(e.target.value)}
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                      className="h-12 px-4 font-mono font-medium text-[#4ade80] bg-[#08080a] border border-[#2e3038] rounded-full text-[14px] focus:border-[#777a88]"
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground text-xs font-bold uppercase tracking-widest pl-1">Data de Conquista</Label>
-                  <div className="relative flex items-center group">
-                    <Flag className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/30" />
+                <div className="space-y-1.5">
+                  <Label className="text-[#c7c9d1] text-[12px] font-medium uppercase tracking-wider">
+                    Data Limite
+                  </Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5e616e]" />
                     <Input
                       type="date"
                       value={deadline}
                       onChange={(e) => setDeadline(e.target.value)}
                       required
-                      className={cn(
-                        "h-12 pl-11 pr-4 bg-muted/30 border border-border rounded-2xl text-foreground font-semibold uppercase tracking-widest text-xs focus:border-primary/30",
-                        isDark ? "[&::-webkit-calendar-picker-indicator]:invert-[1]" : ""
-                      )}
+                      className="h-12 pl-11 pr-4 bg-[#08080a] border border-[#2e3038] rounded-full text-white font-medium text-[13px] focus:border-[#777a88] [&::-webkit-calendar-picker-indicator]:invert-[1]"
                     />
                   </div>
                 </div>
 
-                {/* Progress Visualizer */}
-                {Number(target) > 0 && (
-                  <div className="bg-muted/30 border border-border rounded-3xl p-4 space-y-2">
-                    <div className="flex justify-between items-end">
-                      <Label className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Progresso Inicial Simulado</Label>
-                      <span className="text-xs font-bold text-foreground">
-                        {Math.min(100, (Number(current) / Number(target)) * 100 || 0).toFixed(1)}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-muted h-1.5 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-indigo-500 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(100, (Number(current) / Number(target)) * 100 || 0)}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-
                 <Button
                   type="submit"
-                  className="w-full h-14 rounded-2xl text-white font-black text-base shadow-xl transition-all transform active:scale-[0.98] bg-indigo-600 hover:bg-indigo-500 shadow-[0_0_20px_rgba(79,70,229,0.3)] mt-2"
+                  className="w-full h-12 rounded-full bg-[#ffffff] text-[#000000] hover:bg-[#f0f0f4] font-medium text-[14px] shadow-sm transition-all mt-3"
                 >
-                  Confirmar Objetivo
+                  Registrar Alvo no Cofre
                 </Button>
               </form>
             </div>
@@ -206,45 +210,102 @@ export default function Goals() {
         </Dialog>
       </div>
 
-      {/* ─── Summary Global ─── */}
+      {/* ─── Summary Global 3D Cards ─── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-card/40 backdrop-blur-md p-6 rounded-[2rem] border border-border/40 flex flex-col justify-center relative overflow-hidden group shadow-sm">
-          <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-10 transition-opacity">
-            <Target className="h-24 w-24 -mt-10 -mr-10 text-primary" />
+        
+        {/* Card 1: Active Projects */}
+        <TiltCard
+          tiltLimit={15}
+          scale={1.05}
+          perspective={1200}
+          effect="evade"
+          spotlight={true}
+          className="border border-[#1c1d22] bg-[#040406] p-6 shadow-xl"
+        >
+          <div className="space-y-2 [transform:translateZ(30px)]">
+            <div className="flex items-center justify-between text-[#9194a1] text-[11px] font-semibold uppercase tracking-wider font-mono">
+              <span>PROJETOS ATIVOS</span>
+              <Target className="h-4 w-4 text-[#cc9166]" />
+            </div>
+            <p className="font-serif-display text-4xl text-white font-normal">
+              {goals.length}
+            </p>
+            <p className="text-[12px] text-[#5e616e]">
+              Cofres com teto financeiro definido
+            </p>
           </div>
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1 relative z-10">Projetos Ativos</p>
-          <p className="text-3xl font-black font-outfit tracking-tighter relative z-10">{goals.length}</p>
-        </div>
+        </TiltCard>
 
-        <div className="bg-indigo-600/10 backdrop-blur-md p-6 rounded-[2rem] border border-indigo-500/20 shadow-sm relative overflow-hidden group">
-          <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1">Capital Acumulado Global</p>
-          <p className="text-3xl font-black text-indigo-700 dark:text-indigo-100 font-outfit tracking-tighter">{fmt(totalCurrent)}</p>
-          <div className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 mt-2 bg-indigo-500/20 w-fit px-2 py-0.5 rounded-md flex items-center gap-1">
-            <Rocket className="h-3 w-3" /> Fogo no Caixa
+        {/* Card 2: Accumulated Capital */}
+        <TiltCard
+          tiltLimit={15}
+          scale={1.05}
+          perspective={1200}
+          effect="evade"
+          spotlight={true}
+          className="border border-[#1c1d22] bg-[#040406] p-6 shadow-xl"
+        >
+          <div className="space-y-2 [transform:translateZ(30px)]">
+            <div className="flex items-center justify-between text-[#9194a1] text-[11px] font-semibold uppercase tracking-wider font-mono">
+              <span>CAPITAL ACUMULADO</span>
+              <span className="w-2 h-2 rounded-full bg-[#4ade80] animate-pulse" />
+            </div>
+            <p className="font-serif-display text-3xl sm:text-4xl text-white font-normal truncate">
+              {fmt(totalCurrent)}
+            </p>
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[#2e3038] bg-[#121317] text-[11px] font-medium text-[#4ade80]">
+              <TrendingUp className="h-3 w-3" />
+              <span>{totalCompletionPct.toFixed(1)}% do alvo global</span>
+            </div>
           </div>
-        </div>
+        </TiltCard>
 
-        <div className="bg-card/40 backdrop-blur-md p-6 rounded-[2rem] border border-border/40 shadow-sm relative overflow-hidden group">
-          <div className="absolute inset-y-0 left-0 w-1.5 bg-border/50 group-hover:bg-primary/50 transition-colors" />
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Alvo Patrimonial Total</p>
-          <p className="text-3xl font-black font-outfit tracking-tighter">{fmt(totalTarget)}</p>
-
-          <div className="w-full bg-background/50 h-1.5 rounded-full mt-3 overflow-hidden border border-border/50">
-            <div className="h-full bg-foreground rounded-full" style={{ width: `${totalCompletionPct}%` }} />
+        {/* Card 3: Total Target */}
+        <TiltCard
+          tiltLimit={15}
+          scale={1.05}
+          perspective={1200}
+          effect="evade"
+          spotlight={true}
+          className="border border-[#1c1d22] bg-[#040406] p-6 shadow-xl"
+        >
+          <div className="space-y-2.5 [transform:translateZ(30px)]">
+            <div className="flex items-center justify-between text-[#9194a1] text-[11px] font-semibold uppercase tracking-wider font-mono">
+              <span>ALVO PATRIMONIAL TOTAL</span>
+              <ShieldCheck className="h-4 w-4 text-[#cc9166]" />
+            </div>
+            <p className="font-serif-display text-3xl sm:text-4xl text-[#e2e3e9] font-normal truncate">
+              {fmt(totalTarget)}
+            </p>
+            <div className="w-full bg-[#1c1d22] h-1.5 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${Math.min(totalCompletionPct, 100)}%`,
+                  background:
+                    "linear-gradient(90deg, rgb(174, 147, 87), rgb(255, 240, 204))",
+                }}
+              />
+            </div>
           </div>
-        </div>
+        </TiltCard>
+
       </div>
 
-      {/* ─── Goals Grid ─── */}
+      {/* ─── Goals 3D Cards Grid ─── */}
       {goals.length === 0 ? (
-        <div className="py-20 px-6 flex flex-col items-center justify-center text-center rounded-[2rem] border border-border/40 border-dashed bg-card/20 text-muted-foreground">
-          <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-6">
-            <Flag className="h-10 w-10 opacity-40" />
+        <div className="py-20 px-6 flex flex-col items-center justify-center text-center rounded-[14px] border border-dashed border-[#1c1d22] bg-[#040406] text-[#9194a1] space-y-4">
+          <div className="w-16 h-16 rounded-full border border-[#2e3038] bg-[#121317] flex items-center justify-center text-[#cc9166]">
+            <Target className="h-7 w-7" />
           </div>
-          <p className="text-lg font-bold text-foreground">Você ainda não tem metas cravadas.</p>
-          <p className="text-sm font-medium mt-1 max-w-sm">
-            Sem um alvo, qualquer caminho serve. Comece criando um objetivo palpável e veja seu patrimônio seguir a direção certa.
-          </p>
+          <div className="space-y-1 max-w-md">
+            <h3 className="font-serif-display text-xl text-white font-normal">
+              Nenhuma meta registrada no cofre
+            </h3>
+            <p className="text-[13px] text-[#9194a1]">
+              Comece criando seu primeiro objetivo para acompanhar a evolução do patrimônio com cartões 3D interativos.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -254,95 +315,114 @@ export default function Goals() {
             const isFinished = pct >= 100;
 
             return (
-              <div
+              <TiltCard
                 key={goal.id}
+                tiltLimit={18}
+                scale={1.05}
+                perspective={1200}
+                effect="evade"
+                spotlight={true}
                 className={cn(
-                  "bg-card/40 backdrop-blur-md p-6 rounded-[2rem] border transition-all duration-300 relative overflow-hidden group shadow-sm flex flex-col gap-6",
+                  "border bg-gradient-to-br from-[#0a0a0e] via-[#040406] to-[#08080c] p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between min-h-[310px] shadow-2xl relative group",
                   isFinished
-                    ? "border-emerald-500/50 bg-emerald-500/5 hover:border-emerald-500 shadow-emerald-500/10"
-                    : "border-border/40 hover:border-border/80 hover:shadow-xl hover:-translate-y-1"
+                    ? "border-[#4ade80]/40 shadow-[#4ade80]/10"
+                    : "border-[#1c1d22] hover:border-[#777a88]"
                 )}
               >
-                {/* Visual Glow */}
-                <div
-                  className={cn(
-                    "absolute -left-10 -bottom-10 w-32 h-32 rounded-full blur-[40px] opacity-10 pointer-events-none transition-opacity group-hover:opacity-30",
-                    isFinished ? "bg-emerald-500" : "bg-primary"
-                  )}
-                  style={{ backgroundColor: !isFinished ? goal.color : undefined }}
-                />
+                {/* 3D Decorative Top Elements */}
+                <div className="space-y-4 [transform:translateZ(35px)]">
+                  
+                  {/* Category / Deadline / Delete */}
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1.5">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[#2e3038] bg-[#08080a] text-[10px] font-mono text-[#cc9166] uppercase">
+                        <span>Prazo: {new Date(goal.deadline).toLocaleDateString("pt-BR")}</span>
+                      </div>
+                      <h3 className="font-serif-display text-2xl text-white font-normal leading-tight tracking-tight">
+                        {goal.name}
+                      </h3>
+                    </div>
 
-                <div className="flex items-start justify-between relative z-10">
-                  <div className="min-w-0 pr-2">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                      Prazo: {new Date(goal.deadline).toLocaleDateString("pt-BR")}
-                    </p>
-                    <h3 className="font-outfit font-black text-xl tracking-tight truncate leading-tight uppercase font-outfit">
-                      {goal.name}
-                    </h3>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(goal.id);
+                      }}
+                      className="p-1.5 rounded-full border border-transparent hover:border-[#2e3038] text-[#5e616e] hover:text-red-400 hover:bg-[#121317] transition-colors"
+                      title="Excluir meta"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(goal.id)}
-                    className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive shrink-0 rounded-lg -mr-2"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+
+                  {/* Amounts with 3D Pop */}
+                  <div className="pt-2 [transform:translateZ(20px)]">
+                    <span className="text-[11px] text-[#9194a1] uppercase tracking-wider font-mono block">
+                      SALDO ACUMULADO
+                    </span>
+                    <div className="flex items-baseline justify-between gap-2 mt-0.5">
+                      <span className="font-serif-display text-3xl text-white font-normal tracking-tight">
+                        {fmt(goal.current)}
+                      </span>
+                      <span className="text-[12px] font-mono text-[#9194a1]">
+                        / {fmt(goal.target)}
+                      </span>
+                    </div>
+                  </div>
+
                 </div>
 
-                <div className="relative z-10 flex-1 flex flex-col justify-end space-y-3">
-                  <div className="flex items-end justify-between font-outfit">
-                    <div>
-                      <span className="text-2xl font-black tracking-tighter">{fmt(goal.current)}</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest block leading-3">Alvo</span>
-                      <span className="text-sm font-bold text-muted-foreground/80">{fmt(goal.target)}</span>
-                    </div>
-                  </div>
-
-                  {/* Premium Progress Bar */}
+                {/* 3D Bottom Section: Progress Bar & Aporte Action */}
+                <div className="space-y-4 pt-4 border-t border-[#1c1d22] [transform:translateZ(40px)]">
+                  
+                  {/* Progress Line */}
                   <div className="space-y-1.5">
-                    <div className="w-full bg-background/50 h-3 rounded-full overflow-hidden border border-border/50 relative shadow-inner">
-                      {/* Glow Behind Bar */}
+                    <div className="flex justify-between items-center text-[11px] font-mono">
+                      <span className="text-[#9194a1]">Progresso</span>
+                      <span
+                        className={cn(
+                          "font-semibold",
+                          isFinished ? "text-[#4ade80]" : "text-[#cc9166]"
+                        )}
+                      >
+                        {pct.toFixed(1)}%
+                      </span>
+                    </div>
+
+                    <div className="w-full bg-[#08080a] h-2 rounded-full overflow-hidden border border-[#2e3038]">
                       <div
-                        className="absolute inset-y-0 left-0 w-full opacity-30 blur-sm mix-blend-screen pointer-events-none"
-                        style={{ backgroundColor: isFinished ? "#10b981" : goal.color }}
-                      />
-                      <div
-                        className="h-full rounded-full transition-all duration-1000 ease-out relative z-10"
+                        className="h-full rounded-full transition-all duration-700"
                         style={{
                           width: `${pct}%`,
-                          backgroundColor: isFinished ? "#10b981" : goal.color
+                          background: isFinished
+                            ? "linear-gradient(90deg, #10b981, #34d399)"
+                            : "linear-gradient(103deg, rgb(174, 147, 87), rgb(255, 240, 204) 40%, rgb(174, 147, 87) 70%)",
                         }}
                       />
                     </div>
-
-                    <div className="flex justify-end">
-                      {isFinished ? (
-                        <span className="text-[11px] font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1">
-                          <CheckCircle2 className="h-3.5 w-3.5" /> Alcançada!
-                        </span>
-                      ) : (
-                        <span className="text-[11px] font-bold text-muted-foreground">
-                          {pct.toFixed(1)}% do trajeto concluído
-                        </span>
-                      )}
-                    </div>
                   </div>
-                </div>
 
-                {!isFinished && (
-                  <Button
-                    variant="outline"
-                    className="w-full relative z-10 rounded-xl font-bold bg-background/50 border-border/50 hover:bg-background hover:text-foreground hover:border-border gap-2 shadow-sm"
-                    onClick={() => handleAddValue(goal.id)}
-                  >
-                    <TrendingUp className="h-4 w-4" /> Fazer Aporte
-                  </Button>
-                )}
-              </div>
+                  {/* Action Button */}
+                  {!isFinished ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddValue(goal.id);
+                      }}
+                      className="w-full py-2.5 px-4 rounded-full border border-[#2e3038] hover:border-[#777a88] bg-[#08080a] hover:bg-[#121317] text-white text-[13px] font-medium transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                    >
+                      <TrendingUp className="h-3.5 w-3.5 text-[#cc9166]" />
+                      <span>Fazer Aporte</span>
+                    </button>
+                  ) : (
+                    <div className="py-2 px-3 rounded-full border border-[#4ade80]/30 bg-[#4ade80]/10 text-[#4ade80] text-[12px] font-medium text-center flex items-center justify-center gap-1.5">
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>Objetivo Alcançado com Sucesso</span>
+                    </div>
+                  )}
+
+                </div>
+              </TiltCard>
             );
           })}
         </div>

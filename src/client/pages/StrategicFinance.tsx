@@ -31,14 +31,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { TiltCard } from "@/client/components/ui/tilt-card";
 
-// ─────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────
 const PRESET_COLORS = [
-  "#6366f1", "#ec4899", "#10b981", "#f97316",
+  "#cc9166", "#e2e3e9", "#10b981", "#f97316",
   "#3b82f6", "#8b5cf6", "#eab308", "#ef4444",
 ];
+
 function fmt(v: number) {
   return `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
 }
@@ -47,19 +46,11 @@ function pct(used: number, limit: number) {
   return Math.min((used / limit) * 100, 100);
 }
 
-// ─────────────────────────────────────────────
-// Progress Bar
-// ─────────────────────────────────────────────
 function ProgressBar({ value, color, danger }: { value: number; color: string; danger: boolean }) {
   return (
-    <div className="w-full h-2.5 rounded-full bg-secondary/50 overflow-hidden border border-border/50 relative">
-      {/* Glow Effect */}
+    <div className="w-full h-2 rounded-full bg-[#121317] overflow-hidden border border-[#1c1d22] relative">
       <div
-        className="absolute inset-y-0 left-0 w-full opacity-20 blur-sm mix-blend-screen pointer-events-none"
-        style={{ backgroundColor: danger ? "#ef4444" : color }}
-      />
-      <div
-        className={cn("h-full rounded-full transition-all duration-1000 ease-out relative z-10", danger && "animate-pulse")}
+        className={cn("h-full rounded-full transition-all duration-500", danger && "animate-pulse")}
         style={{
           width: `${value}%`,
           backgroundColor: danger ? "#ef4444" : color,
@@ -69,9 +60,6 @@ function ProgressBar({ value, color, danger }: { value: number; color: string; d
   );
 }
 
-// ─────────────────────────────────────────────
-// Main Page
-// ─────────────────────────────────────────────
 export default function StrategicFinance() {
   const { toast } = useToast();
   const {
@@ -84,7 +72,6 @@ export default function StrategicFinance() {
     deleteCardCeiling,
   } = useFinance();
 
-  // ── Budget Strategy ──────────────────────────
   const [rules, setRules] = useState<BudgetRule[]>(budgetRules);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
 
@@ -122,7 +109,6 @@ export default function StrategicFinance() {
     toast({ title: "Estratégia salva!", description: "Sua distribuição foi atualizada." });
   }
 
-  // ── Card Ceilings ───────────────────────────
   const [ceilingEdit, setCeilingEdit] = useState<Record<string, Partial<CardCeiling>>>({});
 
   const creditCards = useMemo(
@@ -151,7 +137,6 @@ export default function StrategicFinance() {
     toast({ title: "Teto salvo!", description: `Configuração atualizada para ${accounts.find(a => a.id === accId)?.name}.` });
   }
 
-  // ── Spending stats for current month ────────
   const monthNow = new Date();
   const monthStart = startOfMonth(monthNow);
   const monthEnd = endOfMonth(monthNow);
@@ -165,7 +150,6 @@ export default function StrategicFinance() {
 
   const totalMonthExpense = monthlyExpenses.reduce((s, t) => s + t.amount, 0);
 
-  // category spending map
   const catSpending = useMemo(() => {
     const map: Record<string, number> = {};
     monthlyExpenses.forEach((t) => {
@@ -174,7 +158,6 @@ export default function StrategicFinance() {
     return map;
   }, [monthlyExpenses]);
 
-  // card spending map (by accountId from linked transactions)
   const cardSpending = useMemo(() => {
     const map: Record<string, number> = {};
     monthlyExpenses.forEach((t) => {
@@ -183,11 +166,9 @@ export default function StrategicFinance() {
     return map;
   }, [monthlyExpenses]);
 
-  // ── Smart Notifications ─────────────────────
   const notifications = useMemo(() => {
     const msgs: { key: string; msg: string; level: "warn" | "danger" }[] = [];
 
-    // budget category alerts
     rules.forEach((rule) => {
       const limit = (rule.percentage / 100) * totalMonthExpense;
       const used = catSpending[rule.category] || 0;
@@ -195,19 +176,18 @@ export default function StrategicFinance() {
       if (ratio >= 1) {
         msgs.push({
           key: `cat-${rule.id}`,
-          msg: `🚨 Limite excedido em "${rule.label}" — gastou ${fmt(used)} de ${fmt(limit)} (${(ratio * 100).toFixed(0)}%)`,
+          msg: `Limite excedido em "${rule.label}" — gastou ${fmt(used)} de ${fmt(limit)} (${(ratio * 100).toFixed(0)}%)`,
           level: "danger",
         });
       } else if (ratio >= 0.8) {
         msgs.push({
           key: `cat-${rule.id}`,
-          msg: `⚠️ Já usou ${(ratio * 100).toFixed(0)}% da reserva de "${rule.label}": ${fmt(used)} de ${fmt(limit)}. Faltam ${fmt(limit - used)}.`,
+          msg: `Já usou ${(ratio * 100).toFixed(0)}% da reserva de "${rule.label}": ${fmt(used)} de ${fmt(limit)}.`,
           level: "warn",
         });
       }
     });
 
-    // card ceiling alerts
     cardCeilings.filter((c) => c.notifyEnabled && c.limit > 0).forEach((c) => {
       const used = cardSpending[c.accountId] || 0;
       const ratio = used / c.limit;
@@ -215,13 +195,13 @@ export default function StrategicFinance() {
       if (ratio >= 1) {
         msgs.push({
           key: `card-${c.accountId}`,
-          msg: `🚨 Teto excedido em "${accName}" — ${fmt(used)} de ${fmt(c.limit)}`,
+          msg: `Teto excedido em "${accName}" — ${fmt(used)} de ${fmt(c.limit)}`,
           level: "danger",
         });
       } else if (ratio >= c.alertAt / 100) {
         msgs.push({
           key: `card-${c.accountId}`,
-          msg: `⚠️ Você já utilizou ${(ratio * 100).toFixed(0)}% do teto de "${accName}" (${fmt(used)} de ${fmt(c.limit)}). Faltam ${fmt(c.limit - used)}.`,
+          msg: `Você já utilizou ${(ratio * 100).toFixed(0)}% do teto de "${accName}" (${fmt(used)} de ${fmt(c.limit)}).`,
           level: "warn",
         });
       }
@@ -230,391 +210,334 @@ export default function StrategicFinance() {
     return msgs;
   }, [rules, catSpending, cardCeilings, cardSpending, accounts, totalMonthExpense]);
 
-  useEffect(() => {
-    if (notifications.length > 0) {
-      notifications.slice(0, 1).forEach((n) => {
-        toast({
-          title: n.level === "danger" ? "Limite Excedido!" : "Atenção ao orçamento",
-          description: n.msg,
-          variant: n.level === "danger" ? "destructive" : "default",
-        });
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="w-full min-h-screen pb-16 bg-[#08080a] text-[#e2e3e9] relative selection:bg-[#cc9166]/20">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-8 py-8 space-y-8 relative z-10">
 
-      {/* ─── Header ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-border/50">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500 font-bold uppercase tracking-widest text-[10px]">
-            <Sparkles className="h-3.5 w-3.5" />
-            Metodologia Inteligente
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-outfit">Estratégia Financeira</h1>
-          <p className="text-muted-foreground font-medium text-sm max-w-lg">
-            Defina sua distribuição ideal de orçamento (ex: 50-30-20) e configure tetos de limite blindados para seus cartões de crédito.
-          </p>
-        </div>
-      </div>
-
-      {/* ─── Notifications ─── */}
-      {notifications.length > 0 && (
-        <div className="space-y-3 animate-in zoom-in-95 duration-500">
-          {notifications.map((n) => (
-            <div
-              key={n.key}
-              className={cn(
-                "flex items-start gap-4 p-5 rounded-2xl text-sm border shadow-sm backdrop-blur-md relative overflow-hidden",
-                n.level === "danger"
-                  ? "bg-destructive/10 border-destructive/20 text-destructive"
-                  : "bg-yellow-500/10 border-yellow-500/20 text-yellow-700 dark:text-yellow-400"
-              )}
-            >
-              <div className={cn(
-                "absolute -left-10 -top-10 w-20 h-20 rounded-full blur-[30px] opacity-20 pointer-events-none",
-                n.level === "danger" ? "bg-destructive" : "bg-yellow-500"
-              )} />
-
-              <div className={cn(
-                "h-8 w-8 rounded-full border shrink-0 flex items-center justify-center -translate-y-0.5",
-                n.level === "danger" ? "bg-destructive/20 border-destructive/30" : "bg-yellow-500/20 border-yellow-500/30"
-              )}>
-                <TriangleAlert className="h-4 w-4" />
-              </div>
-              <p className="font-semibold pt-1.5 leading-relaxed relative z-10">{n.msg}</p>
+        {/* ─── Header ─── */}
+        <section className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-[#1c1d22]">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 text-[#cc9166] text-xs font-mono tracking-widest uppercase">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Metodologia &middot; Vault Strategy</span>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* ─── Budget Strategy Section ─── */}
-      <section className="bg-card/40 backdrop-blur-md border border-border/40 p-6 sm:p-10 rounded-[2rem] shadow-sm space-y-8 relative overflow-hidden group hover:border-border/80 transition-colors">
-
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 shadow-inner">
-              <Target className="h-6 w-6 text-indigo-500" />
-            </div>
-            <div>
-              <h2 className="text-xl font-black font-outfit tracking-tight">Distribuição Alvo do Orçamento</h2>
-              <p className="text-xs text-muted-foreground font-medium mt-0.5">Defina quanto do seu dinheiro suado vai para cada área.</p>
-            </div>
+            <h1 className="text-3xl sm:text-4xl font-serif-display font-medium tracking-tight text-white">
+              Estratégia & Travas de Gastos<span className="text-[#cc9166]">.</span>
+            </h1>
+            <p className="text-sm text-[#9194a1] max-w-xl">
+              Defina sua distribuição ideal de orçamento (ex: 50-30-20) e configure tetos de limite para seus cartões de crédito.
+            </p>
           </div>
-          <div className={cn(
-            "text-base font-black px-4 py-1.5 rounded-full border shadow-sm transition-colors",
-            isValid ? "bg-green-500/10 text-green-600 border-green-500/20" : "bg-destructive/10 text-destructive border-destructive/20"
-          )}>
-            {totalPct.toFixed(0)}% / 100%
-          </div>
-        </div>
+        </section>
 
-        {/* Rule bars preview */}
-        <div className="flex h-3 rounded-full overflow-hidden border border-border/50 bg-muted/50 shadow-inner">
-          {rules.length === 0 && <div className="w-full bg-secondary" />}
-          {rules.map((r) => (
-            <div
-              key={r.id}
-              title={`${r.label}: ${r.percentage}%`}
-              style={{ width: `${r.percentage}%`, backgroundColor: r.color }}
-              className="transition-all duration-1000 origin-left ease-out hover:brightness-125"
-            />
-          ))}
-        </div>
-
-        {/* Rules list */}
-        <div className="space-y-4">
-          {rules.map((rule) => {
-            const catUsed = catSpending[rule.category] || 0;
-            const catLimit = (rule.percentage / 100) * totalMonthExpense;
-            const ratio = pct(catUsed, catLimit);
-            const isDanger = catUsed > catLimit && catLimit > 0;
-            const isEditing = editingRuleId === rule.id;
-
-            return (
+        {/* ─── Notifications ─── */}
+        {notifications.length > 0 && (
+          <div className="space-y-2">
+            {notifications.map((n) => (
               <div
-                key={rule.id}
+                key={n.key}
                 className={cn(
-                  "border rounded-2xl p-5 space-y-4 transition-all duration-300 relative overflow-hidden",
-                  isDanger ? "border-destructive/40 bg-destructive/5 shadow-inner" : "border-border/60 bg-card/60 hover:bg-card/80 shadow-sm"
+                  "flex items-center gap-3 p-4 rounded-xl text-xs font-mono border",
+                  n.level === "danger"
+                    ? "bg-rose-950/30 border-rose-800/40 text-rose-300"
+                    : "bg-amber-950/30 border-amber-800/40 text-amber-300"
                 )}
               >
-                {/* Header row */}
-                <div className="flex items-center gap-4 relative z-10">
-                  <div className="w-4 h-4 rounded-full border border-border/50 shadow-inner shrink-0" style={{ backgroundColor: rule.color }} />
-                  {isEditing ? (
-                    <Input
-                      className="h-9 text-sm font-bold w-48 bg-background/50 rounded-xl"
-                      value={rule.label}
-                      onChange={(e) => updateRule(rule.id, "label", e.target.value)}
-                    />
-                  ) : (
-                    <span className="font-bold text-base flex-1">{rule.label}</span>
-                  )}
-                  <span className="text-xs font-bold text-muted-foreground ml-auto hidden sm:flex">
-                    {isDanger ? (
-                      <span className="text-destructive flex items-center gap-1.5 uppercase tracking-widest bg-destructive/10 px-2 py-1 rounded-md">
-                        <TriangleAlert className="h-3.5 w-3.5" /> Excedido
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1.5 text-green-600 bg-green-500/10 px-2 py-1 rounded-md uppercase tracking-widest">
-                        <CheckCircle2 className="h-3.5 w-3.5" /> Dentro do limite
-                      </span>
-                    )}
-                  </span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setEditingRuleId(isEditing ? null : rule.id)}
-                      className="h-8 w-8 rounded-xl flex items-center justify-center bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
-                    >
-                      {isEditing ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    </button>
-                    <button
-                      onClick={() => removeRule(rule.id)}
-                      className="h-8 w-8 rounded-xl flex items-center justify-center bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
+                <TriangleAlert className="h-4 w-4 shrink-0" />
+                <p className="flex-1">{n.msg}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
-                {/* Editing panel */}
-                {isEditing && (
-                  <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_150px] gap-6 pt-4 border-t border-border/40 relative z-10 w-full mb-4">
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">Categoria Monitorada</Label>
-                      <Select
-                        value={rule.category}
-                        onValueChange={(v) => updateRule(rule.id, "category", v)}
+        {/* ─── Budget Strategy Section ─── */}
+        <section className="bg-[#040406] border border-[#1c1d22] p-6 sm:p-8 rounded-2xl shadow-xl space-y-6">
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between pb-4 border-b border-[#1c1d22]">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-[#121317] border border-[#1c1d22] text-[#cc9166]">
+                <Target className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-serif-display font-semibold text-white">Distribuição do Orçamento</h2>
+                <p className="text-xs text-[#9194a1]">Controle percentual de saídas por centro de custo.</p>
+              </div>
+            </div>
+            <div className={cn(
+              "text-xs font-mono px-3 py-1 rounded-md border",
+              isValid ? "bg-emerald-950/40 text-emerald-400 border-emerald-800/30" : "bg-rose-950/40 text-rose-400 border-rose-800/30"
+            )}>
+              Total Alocado: {totalPct.toFixed(0)}% / 100%
+            </div>
+          </div>
+
+          {/* Rule visual strip */}
+          <div className="flex h-2.5 rounded-full overflow-hidden border border-[#1c1d22] bg-[#121317]">
+            {rules.length === 0 && <div className="w-full bg-[#1c1d22]" />}
+            {rules.map((r) => (
+              <div
+                key={r.id}
+                title={`${r.label}: ${r.percentage}%`}
+                style={{ width: `${r.percentage}%`, backgroundColor: r.color }}
+                className="transition-all duration-500"
+              />
+            ))}
+          </div>
+
+          {/* Rules list */}
+          <div className="space-y-3">
+            {rules.map((rule) => {
+              const catUsed = catSpending[rule.category] || 0;
+              const catLimit = (rule.percentage / 100) * totalMonthExpense;
+              const ratio = pct(catUsed, catLimit);
+              const isDanger = catUsed > catLimit && catLimit > 0;
+              const isEditing = editingRuleId === rule.id;
+
+              return (
+                <div
+                  key={rule.id}
+                  className={cn(
+                    "border rounded-xl p-4 space-y-3 bg-[#08080a] transition-colors",
+                    isDanger ? "border-rose-800/50" : "border-[#1c1d22]"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: rule.color }} />
+                    {isEditing ? (
+                      <Input
+                        className="h-8 text-xs font-medium w-44 bg-[#121317] border-[#1c1d22] text-white rounded-lg"
+                        value={rule.label}
+                        onChange={(e) => updateRule(rule.id, "label", e.target.value)}
+                      />
+                    ) : (
+                      <span className="font-medium text-xs text-white flex-1">{rule.label}</span>
+                    )}
+
+                    <span className="text-[11px] font-mono text-[#9194a1] ml-auto">
+                      {isDanger ? (
+                        <span className="text-rose-400">Excedido</span>
+                      ) : (
+                        <span className="text-emerald-400">Normal</span>
+                      )}
+                    </span>
+
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => setEditingRuleId(isEditing ? null : rule.id)}
+                        className="h-7 w-7 rounded-md flex items-center justify-center bg-[#121317] hover:bg-[#1c1d22] text-[#9194a1] hover:text-white"
                       >
-                        <SelectTrigger className="h-14 bg-muted/20 border border-border/50 rounded-2xl text-foreground font-semibold focus:ring-1 focus:border-indigo-500/50">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-popover border-border text-popover-foreground rounded-xl shadow-xl">
-                          {EXPENSE_CATEGORIES.map((c) => (
-                            <SelectItem key={c} value={c} className="font-medium focus:bg-white/10 rounded-lg cursor-pointer text-sm">
-                              {c}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        {isEditing ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      </button>
+                      <button
+                        onClick={() => removeRule(rule.id)}
+                        className="h-7 w-7 rounded-md flex items-center justify-center bg-rose-950/30 hover:bg-rose-950/60 text-rose-400"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">Peso (%)</Label>
-                      <div className="flex flex-col justify-center gap-3 relative bg-muted/20 border border-border/50 rounded-2xl p-4 transition-all focus-within:border-indigo-500/50 h-[84px]">
-                        <div className="flex justify-between items-center font-bold font-outfit">
-                          <span className="text-white/30 text-[10px] uppercase tracking-widest">Ajuste o Peso</span>
-                          <span className="text-indigo-400 text-xl tracking-tight">{rule.percentage}%</span>
-                        </div>
+                  </div>
+
+                  {isEditing && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-[#1c1d22]">
+                      <div className="space-y-1">
+                        <Label className="text-[10px] font-mono uppercase text-[#9194a1]">Categoria</Label>
+                        <Select
+                          value={rule.category}
+                          onValueChange={(v) => updateRule(rule.id, "category", v)}
+                        >
+                          <SelectTrigger className="h-8 bg-[#121317] border-[#1c1d22] text-white text-xs rounded-lg">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-[#08080a] border-[#1c1d22] text-white">
+                            {EXPENSE_CATEGORIES.map((c) => (
+                              <SelectItem key={c} value={c} className="text-xs">{c}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label className="text-[10px] font-mono uppercase text-[#9194a1]">Percentual ({rule.percentage}%)</Label>
                         <input
                           type="range"
-                          title="Ajuste a porcentagem"
                           min={0}
                           max={100}
                           step={1}
-                          className="w-full h-1.5 bg-muted rounded-full appearance-none cursor-pointer outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-indigo-500 [&::-webkit-slider-thumb]:rounded-full hover:[&::-webkit-slider-thumb]:scale-125 transition-all focus:ring-2 focus:ring-indigo-500/50"
+                          className="w-full h-2 bg-[#121317] rounded-lg appearance-none cursor-pointer accent-[#cc9166]"
                           value={rule.percentage}
                           onChange={(e) => updateRule(rule.id, "percentage", Number(e.target.value))}
                         />
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cor Tema</Label>
-                      <div className="flex gap-2 flex-wrap">
-                        {PRESET_COLORS.map((c) => (
-                          <button
-                            key={c}
-                            onClick={() => updateRule(rule.id, "color", c)}
-                            className={cn(
-                              "w-7 h-7 rounded-full border-2 transition-all hover:scale-110 shadow-inner",
-                              rule.color === c ? "border-foreground scale-110 shadow-black ring-2 ring-primary/30" : "border-transparent opacity-60"
-                            )}
-                            style={{ backgroundColor: c }}
-                          />
-                        ))}
+
+                      <div className="space-y-1">
+                        <Label className="text-[10px] font-mono uppercase text-[#9194a1]">Cor</Label>
+                        <div className="flex gap-1.5 pt-1">
+                          {PRESET_COLORS.map((c) => (
+                            <button
+                              key={c}
+                              onClick={() => updateRule(rule.id, "color", c)}
+                              className={cn(
+                                "w-5 h-5 rounded-full border transition-all",
+                                rule.color === c ? "border-white scale-110" : "border-transparent opacity-60"
+                              )}
+                              style={{ backgroundColor: c }}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-
-                {/* Progress */}
-                <div className="space-y-2 pt-2 relative z-10">
-                  <div className="flex justify-between text-[13px] font-bold text-muted-foreground">
-                    <span className="flex items-center gap-1.5 text-foreground"><PieChart className="h-4 w-4" /> Consumido: {fmt(catUsed)}</span>
-                    <span>Teto Estipulado: {catLimit > 0 ? fmt(catLimit) : "—"}</span>
-                  </div>
-                  <ProgressBar value={ratio} color={rule.color} danger={isDanger} />
-                  <p className="text-xs font-medium text-muted-foreground text-right pt-1">
-                    <strong className={isDanger ? "text-destructive" : "text-foreground"}>{ratio.toFixed(1)}% utilizado</strong>
-                    {!isDanger && catLimit > 0 && ` · Restam ${fmt(catLimit - catUsed)}`}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-
-          {rules.length === 0 && (
-            <div className="text-center py-10 opacity-50 border border-dashed rounded-2xl border-border/50">
-              <p className="font-semibold text-sm">Nenhuma regra definida. Adicione sua primeira distribuição.</p>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-border/40">
-          <Button variant="outline" onClick={addRule} className="h-12 rounded-xl font-bold bg-secondary/50 border-0 hover:bg-secondary gap-2">
-            <Plus className="h-4 w-4" /> Mais uma divisão
-          </Button>
-          <Button
-            onClick={handleSaveStrategy}
-            disabled={!isValid}
-            className="h-12 px-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest text-xs gap-2 shadow-lg shadow-indigo-500/20 w-full sm:w-auto"
-          >
-            <CheckCircle2 className="h-5 w-5" /> Consolidar Plano
-          </Button>
-        </div>
-      </section>
-
-      {/* ─── Card Ceilings ─── */}
-      <section className="bg-card/40 backdrop-blur-md border border-border/40 p-6 sm:p-10 rounded-[2rem] shadow-sm space-y-8 relative overflow-hidden group hover:border-border/80 transition-colors">
-
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 shadow-inner">
-            <CreditCard className="h-6 w-6 text-rose-500" />
-          </div>
-          <div>
-            <h2 className="text-xl font-black font-outfit tracking-tight">Travas de Dinheiro de Plástico</h2>
-            <p className="text-xs text-muted-foreground font-medium mt-0.5">Defina gatilhos de alerta de teto independentes do limite do cartão (para evitar rolar faturas).</p>
-          </div>
-        </div>
-
-        {creditCards.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground gap-3 bg-muted/20 border border-dashed rounded-[2rem]">
-            <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center opacity-50">
-              <CreditCard className="h-8 w-8" />
-            </div>
-            <p className="font-semibold">Sua carteira digital não possui cartões de crédito.</p>
-            <p className="text-xs">Cadastre um na aba contas para travá-los contra excessos.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {creditCards.map((card) => {
-              const c = getCeiling(card.id);
-              const spent = cardSpending[card.id] || 0;
-              const ratio = pct(spent, c.limit);
-              const isDanger = c.limit > 0 && spent > c.limit;
-              const isWarn = c.limit > 0 && ratio >= c.alertAt;
-              const isDirty = !!ceilingEdit[card.id];
-
-              return (
-                <div
-                  key={card.id}
-                  className={cn(
-                    "border border-border/60 rounded-3xl p-6 relative overflow-hidden transition-all duration-300 shadow-sm",
-                    isDanger ? "bg-destructive/5 border-destructive/30" : "bg-card/60 hover:border-border"
                   )}
-                >
-                  <div className="flex items-start justify-between mb-6 relative z-10">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl border border-border/50 shadow-inner flex items-center justify-center" style={{ backgroundColor: `${card.color}20` }}>
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: card.color }} />
-                      </div>
-                      <div>
-                        <span className="font-bold block tracking-tight">{card.name}</span>
-                        <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{card.institution}</span>
-                      </div>
-                    </div>
-                    {isDanger ? (
-                      <span className="text-[10px] font-black uppercase tracking-widest text-destructive bg-destructive/10 px-2 py-1 rounded-md border border-destructive/20 shadow-sm flex items-center gap-1">
-                        <TriangleAlert className="h-3 w-3" /> Excedeu Teto
-                      </span>
-                    ) : isWarn ? (
-                      <span className="text-[10px] font-black uppercase tracking-widest text-yellow-600 bg-yellow-500/10 px-2 py-1 rounded-md border border-yellow-500/20 shadow-sm flex items-center gap-1">
-                        <TriangleAlert className="h-3 w-3" /> Em Risco
-                      </span>
-                    ) : null}
-                  </div>
 
-                  <div className="space-y-5 relative z-10">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">Teto Mensal (R$)</Label>
-                        <div className="relative group">
-                          <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-rose-500">R$</span>
-                          <Input
-                            type="number"
-                            min={0}
-                            className="h-12 pl-12 pr-4 bg-muted/20 border border-border/50 rounded-2xl text-foreground font-semibold placeholder:text-muted-foreground/30 focus:border-rose-500/50 focus:ring-1 focus:ring-rose-500/30 transition-all focus:bg-muted/30"
-                            value={c.limit || ""}
-                            placeholder="2000"
-                            onChange={(e) => patchCeiling(card.id, "limit", Number(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">Alarme (%)</Label>
-                        <div className="relative group">
-                          <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-yellow-500">%</span>
-                          <Input
-                            type="number"
-                            min={1}
-                            max={100}
-                            className="h-12 pl-10 pr-4 bg-muted/20 border border-border/50 rounded-2xl text-foreground font-semibold placeholder:text-muted-foreground/30 focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all focus:bg-muted/30"
-                            value={c.alertAt}
-                            onChange={(e) => patchCeiling(card.id, "alertAt", Number(e.target.value))}
-                          />
-                        </div>
-                      </div>
+                  {/* Progress Bar */}
+                  <div className="space-y-1 pt-1">
+                    <div className="flex justify-between text-[11px] font-mono text-[#9194a1]">
+                      <span>Gasto: {fmt(catUsed)}</span>
+                      <span>Teto: {catLimit > 0 ? fmt(catLimit) : "—"} ({ratio.toFixed(0)}%)</span>
                     </div>
-
-                    <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/20 border border-border/50">
-                      <Label className="text-[11px] font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
-                        {c.notifyEnabled ? <Bell className="h-5 w-5 text-indigo-500" /> : <BellOff className="h-5 w-5 text-muted-foreground opacity-50" />}
-                        Notificações de Alarme
-                      </Label>
-                      <Switch
-                        checked={c.notifyEnabled}
-                        onCheckedChange={(v) => patchCeiling(card.id, "notifyEnabled", v)}
-                      />
-                    </div>
-
-                    {/* Usage bar */}
-                    {c.limit > 0 && (
-                      <div className="space-y-2 pt-2 border-t border-border/40 mt-4">
-                        <div className="flex justify-between text-xs font-semibold text-muted-foreground">
-                          <span className="flex items-center gap-1 text-foreground">
-                            <TrendingDown className="h-3.5 w-3.5 text-rose-500" /> Dispêndio: {fmt(spent)}
-                          </span>
-                        </div>
-                        <ProgressBar value={ratio} color={card.color} danger={isDanger} />
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-2 pt-3">
-                      <Button
-                        disabled={!isDirty}
-                        onClick={() => saveCeiling(card.id)}
-                        className="h-12 flex-1 rounded-2xl bg-primary text-primary-foreground font-black text-[13px] uppercase tracking-widest transition-all active:scale-[0.98] shadow-lg gap-2 border-0"
-                      >
-                        <CheckCircle2 className="h-4 w-4" /> Atualizar Trava
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="h-10 w-10 shrink-0 rounded-xl border-border/50 text-destructive hover:bg-destructive/10"
-                        onClick={() => deleteCardCeiling(card.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <ProgressBar value={ratio} color={rule.color} danger={isDanger} />
                   </div>
                 </div>
               );
             })}
           </div>
-        )}
-      </section>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#1c1d22]">
+            <Button
+              variant="outline"
+              onClick={addRule}
+              className="h-8 rounded-lg text-xs font-medium border-[#2e3038] bg-[#121317] text-white hover:bg-[#1c1d22] gap-1.5"
+            >
+              <Plus className="h-3.5 w-3.5" /> Adicionar Categoria
+            </Button>
+            <Button
+              onClick={handleSaveStrategy}
+              disabled={!isValid}
+              className="h-8 px-5 rounded-lg bg-white hover:bg-white/90 text-black font-semibold text-xs gap-1.5 border-0 shadow-sm"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5" /> Salvar Estratégia
+            </Button>
+          </div>
+        </section>
+
+        {/* ─── Card Ceilings ─── */}
+        <section className="bg-[#040406] border border-[#1c1d22] p-6 sm:p-8 rounded-2xl shadow-xl space-y-6">
+          <div className="flex items-center gap-3 pb-4 border-b border-[#1c1d22]">
+            <div className="p-2 rounded-lg bg-[#121317] border border-[#1c1d22] text-[#cc9166]">
+              <CreditCard className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-serif-display font-semibold text-white">Travas de Cartão de Crédito</h2>
+              <p className="text-xs text-[#9194a1]">Alertas de teto independentes do limite contratado.</p>
+            </div>
+          </div>
+
+          {creditCards.length === 0 ? (
+            <div className="p-8 text-center text-xs font-mono text-[#9194a1] rounded-xl bg-[#08080a] border border-[#1c1d22]">
+              Nenhum cartão de crédito cadastrado na carteira.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {creditCards.map((card) => {
+                const c = getCeiling(card.id);
+                const spent = cardSpending[card.id] || 0;
+                const ratio = pct(spent, c.limit);
+                const isDanger = c.limit > 0 && spent > c.limit;
+                const isWarn = c.limit > 0 && ratio >= c.alertAt;
+                const isDirty = !!ceilingEdit[card.id];
+
+                return (
+                  <TiltCard key={card.id} tiltLimit={8} scale={1.01} perspective={1000}>
+                    <div className="bg-[#08080a] border border-[#1c1d22] rounded-2xl p-5 space-y-4 hover:border-[#2e3038] transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: card.color }} />
+                          <div>
+                            <span className="font-semibold text-xs text-white block">{card.name}</span>
+                            <span className="text-[10px] font-mono text-[#9194a1] uppercase">{card.institution}</span>
+                          </div>
+                        </div>
+                        {isDanger ? (
+                          <span className="text-[10px] font-mono uppercase text-rose-400 bg-rose-950/40 px-2 py-0.5 rounded border border-rose-800/40">
+                            Excedido
+                          </span>
+                        ) : isWarn ? (
+                          <span className="text-[10px] font-mono uppercase text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">
+                            Alerta {c.alertAt}%
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 pt-2">
+                        <div className="space-y-1">
+                          <Label className="text-[10px] font-mono uppercase text-[#9194a1]">Teto Mensal (R$)</Label>
+                          <Input
+                            type="number"
+                            min={0}
+                            className="h-8 bg-[#121317] border-[#1c1d22] text-white text-xs font-mono rounded-lg"
+                            value={c.limit || ""}
+                            placeholder="2000"
+                            onChange={(e) => patchCeiling(card.id, "limit", Number(e.target.value))}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-[10px] font-mono uppercase text-[#9194a1]">Alarme (%)</Label>
+                          <Input
+                            type="number"
+                            min={1}
+                            max={100}
+                            className="h-8 bg-[#121317] border-[#1c1d22] text-white text-xs font-mono rounded-lg"
+                            value={c.alertAt}
+                            onChange={(e) => patchCeiling(card.id, "alertAt", Number(e.target.value))}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#121317] border border-[#1c1d22]">
+                        <Label className="text-[11px] font-mono text-[#9194a1] flex items-center gap-2">
+                          {c.notifyEnabled ? <Bell className="h-3.5 w-3.5 text-[#cc9166]" /> : <BellOff className="h-3.5 w-3.5 text-[#9194a1]" />}
+                          Alertas de Teto Ativos
+                        </Label>
+                        <Switch
+                          checked={c.notifyEnabled}
+                          onCheckedChange={(v) => patchCeiling(card.id, "notifyEnabled", v)}
+                        />
+                      </div>
+
+                      {c.limit > 0 && (
+                        <div className="space-y-1 pt-1">
+                          <div className="flex justify-between text-[11px] font-mono text-[#9194a1]">
+                            <span>Gasto Atual: {fmt(spent)}</span>
+                            <span>{ratio.toFixed(0)}% do teto</span>
+                          </div>
+                          <ProgressBar value={ratio} color={card.color} danger={isDanger} />
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-2 pt-1">
+                        <Button
+                          disabled={!isDirty}
+                          onClick={() => saveCeiling(card.id)}
+                          className="h-8 flex-1 rounded-lg bg-white hover:bg-white/90 text-black font-semibold text-xs border-0 disabled:opacity-40"
+                        >
+                          Salvar Trava
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 rounded-lg text-[#9194a1] hover:text-rose-400 hover:bg-rose-950/30"
+                          onClick={() => deleteCardCeiling(card.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </TiltCard>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+      </div>
     </div>
   );
 }

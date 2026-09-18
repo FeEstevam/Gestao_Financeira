@@ -52,6 +52,17 @@ export default {
         income: "hsl(var(--income))",
         expense: "hsl(var(--expense))",
         balance: "hsl(var(--balance))",
+        obsidian: "#08080a",
+        onyx: "#040406",
+        carbon: "#121317",
+        graphite: "#1c1d22",
+        copper: "#cc9166",
+        bone: "#e2e3e9",
+        fog: "#9194a1",
+        mist: "#acafb9",
+        silver: "#c7c9d1",
+        ash: "#5e616e",
+        steel: "#777a88",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,6 +73,10 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      fontFamily: {
+        serif: ['"Playfair Display"', '"DM Serif Display"', "Georgia", "serif"],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", '"Segoe UI"', "Roboto", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

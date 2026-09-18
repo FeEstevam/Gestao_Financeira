@@ -7,14 +7,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Node/Bun
+# Node / Package Managers
 node_modules/
 bun.lockb
 .cache/
+.pnpm-store/
+.npm
+.yarn/
+*.tsbuildinfo
 
 # OS Files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+desktop.ini
 *.local
 
 # Environment Variables
@@ -32,7 +38,7 @@ Thumbs.db
 db.sqlite
 db.sqlite3
 
-# Editors
+# Editors & IDEs
 .vscode/
 !.vscode/extensions.json
 !.vscode/settings.json
@@ -40,20 +46,23 @@ db.sqlite3
 .idea/
 *.swp
 *.swo
+*.sublime-project
+*.sublime-workspace
 
-# Server (Bun/Elysia)
-src/server/dist/
-src/server/coverage/
-src/server/build/
-src/server/tmp/
+# AI & Agent Artifacts
+.gemini/
+.agents/
+scratch/
+artifacts/
 
-# Frontend (Vite/React)
+# Build Outputs (Vite/React)
 dist/
 dist-ssr/
 build/
 out/
 coverage/
+.turbo/
 
-# Misc
+# Deployments & Platforms
 .vercel
 .netlify
